@@ -74,3 +74,31 @@ php artisan vendor:publish \
   --tag="medialibrary-migrations"
 
 php artisan migrate
+<!-- Filament create -already installed -->
+composer require filament/filament:"^3.0" -W
+php artisan filament:install --panels
+php artisan make:filament-user    # creates your admin login
+
+php artisan make:filament-resource PortfolioCategory --generate
+> ask title attribute give either name of the column present in table (name, title)
+>it ask for read only resource (recommended NO)
+
+
+php artisan make:filament-resource Sector --generate
+php artisan make:filament-resource InstallationType --generate
+php artisan make:filament-resource Location --generate
+
+heroicons.com
+
+php artisan make:filament-resource Product --generate
+php artisan make:filament-relation-manager ProductResource variants name
+# "ProductResource" = the parent resource class name
+# "variants"        = the method name on Product model ($product->variants)
+# "name"            = the column shown in the relation manager table
+
+answer [no no]
+php artisan make:filament-resource PortfolioProject --generate
+
+php artisan make:filament-relation-manager PortfolioProjectResource sectors name
+php artisan make:filament-relation-manager PortfolioProjectResource installationTypes name
+php artisan make:filament-relation-manager PortfolioProjectResource productVariants name
