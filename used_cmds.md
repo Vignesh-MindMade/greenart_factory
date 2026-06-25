@@ -103,3 +103,30 @@ php artisan make:filament-resource PortfolioProject --generate
 php artisan make:filament-relation-manager PortfolioProjectResource sectors name
 php artisan make:filament-relation-manager PortfolioProjectResource installationTypes name
 php artisan make:filament-relation-manager PortfolioProjectResource productVariants name -->
+
+composer require bezhansalleh/filament-shield
+php artisan shield:install
+php artisan shield:generate --all 
+
+
+
+# Spatie MediaLibrary — ORM integration
+composer require spatie/laravel-medialibrary
+
+
+
+# Filament plugin for Spatie upload field in forms
+# Check your exact Filament v4 version first:
+composer require filament/spatie-laravel-media-library-plugin
+
+# Publish Spatie's migration (the one you should never hand-write)
+php artisan vendor:publish \
+  --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" \
+  --tag="medialibrary-migrations"
+
+# Cloudinary filesystem driver
+composer require cloudinary-labs/cloudinary-laravel
+# Cloudinary publishes its config
+php artisan cloudinary:install
+
+php artisan migrate
