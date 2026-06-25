@@ -35,6 +35,8 @@ class LocationForm
                         'KW' => 'Kuwait',
                         'BH' => 'Bahrain',
                         'OM' => 'Oman',
+                        'PT' => 'Portugal',     // ← Lisbon
+                        'OTHER' => 'Other',     // ← catch-all for future expansion
                     ]),
             ]);
     }

@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class PortfolioProjectsTable
 {
@@ -15,15 +16,23 @@ class PortfolioProjectsTable
         return $table
             ->columns([
                 TextColumn::make('category.name')
-                    ->searchable(),
+                    ->searchable()->sortable(),
                 TextColumn::make('location.name')
-                    ->searchable(),
+                    ->searchable()->sortable(),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                   
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'draft'     => 'gray',
+                        'published' => 'success',   // green
+                        'archived'  => 'danger',    // red
+                        default     => 'gray',
+                    })
+                       ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -34,7 +43,18 @@ class PortfolioProjectsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(['draft'=>'Draft','published'=>'Published','archived'=>'Archived']),
+
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('location')
+                    ->relationship('location', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make(),

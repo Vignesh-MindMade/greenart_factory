@@ -99,6 +99,7 @@ php artisan make:filament-relation-manager ProductResource variants name
 answer [no no]
 php artisan make:filament-resource PortfolioProject --generate
 
+<!-- Not needed 
 php artisan make:filament-relation-manager PortfolioProjectResource sectors name
 php artisan make:filament-relation-manager PortfolioProjectResource installationTypes name
-php artisan make:filament-relation-manager PortfolioProjectResource productVariants name
+php artisan make:filament-relation-manager PortfolioProjectResource productVariants name -->

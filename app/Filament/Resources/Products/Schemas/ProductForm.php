@@ -25,6 +25,7 @@ class ProductForm
                 TextInput::make('slug')
                     ->required() ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                    
                 Select::make('status')
                     ->required()
                     ->default('draft')

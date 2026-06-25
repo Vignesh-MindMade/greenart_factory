@@ -15,6 +15,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
 
 class VariantsRelationManager extends RelationManager
 {
@@ -25,9 +28,24 @@ class VariantsRelationManager extends RelationManager
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)           // fires the callback when admin clicks away
+                    ->afterStateUpdated(function (string $operation, ?string $state, $set) {
+                    if ($operation === 'create') {  // only auto-fill on CREATE, not EDIT
+                        $set('slug', Str::slug($state));
+                    }
+                    // On edit: admin may have custom slug — don't overwrite it
+                }),
                 TextInput::make('slug')
-                    ->required(),
+                    ->required()
+                     ->rules([
+                    fn ($livewire, $record): \Illuminate\Validation\Rules\Unique =>
+                        Rule::unique('product_variants', 'slug')
+                            ->where('product_id', $livewire->getOwnerRecord()->id)
+                            //                    ↑ scope the check to THIS product only
+                            ->ignore($record?->id),
+                            //        ↑ ignore current record on edit
+                ]),
             ]);
     }
 
@@ -37,23 +55,10 @@ class VariantsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()  ->maxLength(255)
-    ->live(onBlur: true)
-    ->afterStateUpdated(function (string $operation, ?string $state, $set) {
-        if ($operation === 'create') {
-            $set('slug', Str::slug($state));
-        }
-    }),
+                    ->searchable(),
                 TextColumn::make('slug')
-                    ->searchable()->maxLength(255)
-                    ->rules([
-        fn ($livewire, $record): \Illuminate\Validation\Rules\Unique =>
-            Rule::unique('product_variants', 'slug')
-                ->where('product_id', $livewire->getOwnerRecord()->id)
-                //                    ↑ scope the check to THIS product only
-                ->ignore($record?->id),
-                //        ↑ ignore current record on edit
-    ]),
+                    ->searchable(),
+                   
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

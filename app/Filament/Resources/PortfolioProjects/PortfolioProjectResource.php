@@ -14,11 +14,13 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
+// use App\Filament\Resources\PortfolioProjects\RelationManagers\ProductVariantsRelationManager;
+
 class PortfolioProjectResource extends Resource
 {
     protected static ?string $model = PortfolioProject::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -36,6 +38,9 @@ class PortfolioProjectResource extends Resource
     {
         return [
             //
+
+            // ProductVariantsRelationManager::class,
+
         ];
     }
 
