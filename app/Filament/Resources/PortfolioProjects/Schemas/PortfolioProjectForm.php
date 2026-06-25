@@ -30,11 +30,19 @@ class PortfolioProjectForm
             Grid::make(2)->schema([Select::make('category_id')->relationship('category', 'name')->searchable()->preload()->required(), Select::make('location_id')->relationship('location', 'name')->searchable()->preload()->required()]),
 
             Grid::make(2)->schema([Select::make('sectors')->relationship('sectors', 'name')->multiple()->searchable()->preload(), Select::make('installationTypes')->relationship('installationTypes', 'name')->multiple()->searchable()->preload()]),
-            Select::make('productVariants')->relationship('productVariants', 'name')->multiple()->searchable()->preload()->getOptionLabelFromRecordUsing(
-                fn($record) => $record->product->name . ' → ' . $record->name,
-                // Shows: "Moss Creations → Moss wall" in the dropdown
-                //        "Green Walls → Living Green Wall"
-            ),
+         Select::make('productVariants')
+    ->relationship(
+        name: 'productVariants',
+        titleAttribute: 'name',
+        modifyQueryUsing: fn ($query) => $query->with('product')
+        //                ↑ same closure, different home
+    )
+    ->multiple()
+    ->searchable()
+    ->preload()
+    ->getOptionLabelFromRecordUsing(
+        fn ($record) => $record->product->name . ' → ' . $record->name
+    ),
             Select::make('status')
                 ->required()
                 ->default('draft')
