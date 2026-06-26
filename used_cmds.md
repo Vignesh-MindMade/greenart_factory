@@ -134,3 +134,5 @@ php artisan migrate
 composer require codebar-ag/laravel-flysystem-cloudinary
 php artisan vendor:publish --tag="flysystem-cloudinary-config"
 php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-config"
+
+php artisan livewire:publish --config

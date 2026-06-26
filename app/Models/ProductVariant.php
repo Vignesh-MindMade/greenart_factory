@@ -7,11 +7,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Product;
 use App\Models\PortfolioProject;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ProductVariant extends Model
+class ProductVariant extends Model implements HasMedia
 {
     //
+        use InteractsWithMedia;
     protected $fillable = ['product_id', 'name','slug'];
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('variant_images')
+            ->useDisk('cloudinary');
+    }
 
     public function product(): BelongsTo
     {

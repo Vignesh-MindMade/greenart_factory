@@ -5,18 +5,34 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+// use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\PortfolioCategory;
 use App\Models\Location;
 use App\Models\ProductVariant;
 use App\Models\Sector;
 use App\Models\InstallationType;
-use App\Models\Media;
+// use App\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class PortfolioProject extends Model
+
+class PortfolioProject extends Model implements HasMedia
 {
     //
+      use InteractsWithMedia;
     protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status'];
+
+    public function registerMediaCollections(): void
+    {
+        // Cover image — one image, used as thumbnail on archive grid
+        $this->addMediaCollection('cover_image')
+            ->singleFile()              // enforces max 1 image
+            ->useDisk('cloudinary');
+
+        // Gallery — multiple images for the project detail page
+        $this->addMediaCollection('project_images')
+            ->useDisk('cloudinary');    // unlimited files
+    }
 
     public function category():BelongsTo 
     {
@@ -42,8 +58,8 @@ class PortfolioProject extends Model
         return $this->belongsToMany(InstallationType::class, 'portfolio_project_installation_type');
     }
 
-    public function media():MorphMany
-    {
-        return $this->morphMany(Media::class, 'model');
-    }
+    // public function media():MorphMany
+    // {
+    //     return $this->morphMany(Media::class, 'model');
+    // }
 }
