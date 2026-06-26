@@ -5,18 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+// use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\PortfolioCategory;
 use App\Models\Location;
 use App\Models\ProductVariant;
 use App\Models\Sector;
 use App\Models\InstallationType;
-use App\Models\Media;
-
-class PortfolioProject extends Model
+// use App\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+class PortfolioProject extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+    
     //
     protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status'];
+
+       public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('project_images')
+            ->useDisk('cloudinary');
+             $this->addMediaCollection('cover_image')
+        ->useDisk('cloudinary')
+        ->singleFile(); 
+    }
 
     public function category():BelongsTo 
     {
@@ -42,8 +54,8 @@ class PortfolioProject extends Model
         return $this->belongsToMany(InstallationType::class, 'portfolio_project_installation_type');
     }
 
-    public function media():MorphMany
-    {
-        return $this->morphMany(Media::class, 'model');
-    }
+    // public function media():MorphMany
+    // {
+    //     return $this->morphMany(Media::class, 'model');
+    // }
 }

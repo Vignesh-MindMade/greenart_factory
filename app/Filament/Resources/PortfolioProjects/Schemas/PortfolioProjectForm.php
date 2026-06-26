@@ -7,6 +7,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Schemas\Components\Section;
 
 class PortfolioProjectForm
 {
@@ -51,6 +53,28 @@ class PortfolioProjectForm
                     'published' => 'Published',
                     'archived' => 'Archived',
                 ]),
+
+
+Section::make('Media')
+    ->schema([
+        SpatieMediaLibraryFileUpload::make('cover_image')
+            ->collection('cover_image')     // ← matches registerMediaCollections name
+            ->image()
+            ->imagePreviewHeight('200')
+            ->maxFiles(20)
+            ->label('Cover Image (archive thumbnail)')
+            ->preserveFilenames(),
+
+        SpatieMediaLibraryFileUpload::make('project_images')
+            ->collection('project_images')  // ← matches registerMediaCollections name
+            ->multiple()
+            ->reorderable()                 // drag to set display order
+            ->image()
+            ->maxFiles(20)
+             ->preserveFilenames()
+            ->label('Project Gallery Images'),
+    ]),
+                
         ]);
     }
 }
