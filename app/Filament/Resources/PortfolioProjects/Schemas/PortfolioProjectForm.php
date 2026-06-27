@@ -61,7 +61,7 @@ Section::make('Media')
             ->collection('cover_image')     // ← matches registerMediaCollections name
             ->image()
             ->imagePreviewHeight('200')
-            ->maxFiles(20)
+            ->maxFiles(1)
             ->label('Cover Image (archive thumbnail)')
             ->preserveFilenames(),
 
