@@ -17,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 
 class VariantsRelationManager extends RelationManager
@@ -46,7 +47,16 @@ class VariantsRelationManager extends RelationManager
                             ->ignore($record?->id),
                             //        ↑ ignore current record on edit
                 ]),
-            ]);
+                SpatieMediaLibraryFileUpload::make('variant_images')
+            ->collection('variant_images')
+            ->multiple()
+            ->reorderable()
+            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+            ->maxFiles(10)
+               ->preserveFilenames()
+            ->label('Variant Images'),
+           
+        ]);
     }
 
     public function table(Table $table): Table

@@ -28,8 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+             ->favicon(asset('images/GAF-logo.png'))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Emerald ,
             ])
         ->brandLogo(asset('images/GAF-logo.png'))
         ->brandLogoHeight('3rem')
@@ -41,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
+                \App\Filament\Widgets\NavigationCards::class,
                 // FilamentInfoWidget::class,
             ])
             ->middleware([

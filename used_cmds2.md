@@ -138,3 +138,6 @@ php artisan vendor:publish --tag="flysystem-cloudinary-config"
 php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-config"
 
 <!-- php artisan livewire:publish --config -->
+
+
+php artisan make:filament-widget NavigationCards

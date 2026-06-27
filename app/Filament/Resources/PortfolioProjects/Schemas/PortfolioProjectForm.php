@@ -62,6 +62,7 @@ Section::make('Media')
             ->image()
             ->imagePreviewHeight('200')
             ->maxFiles(1)
+            ->directory('Cover')
             ->label('Cover Image (archive thumbnail)')
             ->preserveFilenames(),
 
