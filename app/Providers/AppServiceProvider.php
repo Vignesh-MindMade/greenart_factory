@@ -3,14 +3,23 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
+
 {
     /**
      * Register any application services.
      */
     public function register(): void
     {
+      LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch->locales([
+                'en',
+                'ar',
+            ]);
+        });  
+        
         //
     }
 

@@ -141,3 +141,7 @@ php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServicePr
 
 
 php artisan make:filament-widget NavigationCards
+
+
+composer require bezhansalleh/filament-language-switch
+php artisan vendor:publish --tag=filament-language-switch-config
