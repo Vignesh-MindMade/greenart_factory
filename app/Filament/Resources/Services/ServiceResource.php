@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Resources\Services\RelationManagers\ServiceitemRelationManager;
 
 class ServiceResource extends Resource
 {
@@ -36,6 +37,7 @@ class ServiceResource extends Resource
     {
         return [
             //
+            ServiceitemRelationManager::class,
         ];
     }
 
