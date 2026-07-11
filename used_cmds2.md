@@ -141,3 +141,14 @@ php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServicePr
 
 
 php artisan make:filament-widget NavigationCards
+
+
+
+<!-- Home Page -->
+php artisan make:migration create_hero_slides_table
+php artisan make:migration create_testimonials_table
+php artisan make:migration create_partners_table
+php artisan make:migration create_blog_categories_table
+php artisan make:migration create_blog_posts_table
+php artisan make:migration add_featured_to_portfolio_projects_table
+php artisan make:migration create_page_sections_table
