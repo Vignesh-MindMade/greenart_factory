@@ -74,6 +74,8 @@ php artisan vendor:publish \
   --tag="medialibrary-migrations"
 
 php artisan migrate
+
+
 <!-- Filament create -already installed -->
 composer require filament/filament:"^3.0" -W
 php artisan filament:install --panels
