@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\HeroSlides\Tables;
+namespace App\Filament\Resources\BlogPosts\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,33 +8,26 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class HeroSlidesTable
+class BlogPostsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->reorderable('sort_order')   
-            ->defaultSort('sort_order')
             ->columns([
-                TextColumn::make('headline')
+                TextColumn::make('blog_category_id')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('subtext')
+                TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('cta_label')
-                    ->searchable(),
-                TextColumn::make('cta_url')
-                    ->searchable(),
+                TextColumn::make('published_at')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                        'published' => 'success',
-                        'archived'  => 'danger',
-                        default     => 'gray',
-                    })
-                     ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

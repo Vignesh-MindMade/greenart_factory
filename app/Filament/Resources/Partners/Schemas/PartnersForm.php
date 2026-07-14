@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\HeroSlides\Schemas;
+namespace App\Filament\Resources\Partners\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -8,20 +8,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Schemas\Components\Section;
 
-class HeroSlidesForm
+
+class PartnersForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('headline')
+                TextInput::make('name')
                     ->required(),
-                TextInput::make('subtext'),
-                TextInput::make('cta_label')
-                    ->required(),
-                TextInput::make('cta_url')
-                 
-                    ->required(),
+                TextInput::make('website_url')
+                    ->url(),
                 TextInput::make('sort_order')
                     ->required()
                     ->numeric()
@@ -32,17 +29,17 @@ class HeroSlidesForm
                     ->options([
                         'draft' => 'Draft',
                         'published' => 'Published',
-                        'archived' => 'Archived',
+                        'Archive'=>'Archived',
                     ]),
+
                 Section::make('Media')
-                ->schema([
-                    SpatieMediaLibraryFileUpload::make('hero_slide_images')
-                        ->collection('hero_slide_images')
-                        ->imagePreviewHeight('200')
-                        ->required()
-                        ->preserveFilenames(),
-                      
-                ])
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('partner_logo')
+                        ->collection('partners')
+                            ->imagePreviewHeight('200')
+                            ->required()
+                            ->preserveFilenames(),
+                    ]),
             ]);
     }
 }

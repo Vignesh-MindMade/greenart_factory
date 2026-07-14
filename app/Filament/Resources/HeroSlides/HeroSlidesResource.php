@@ -13,9 +13,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
+use Filament\Navigation\NavigationGroup;
 
 class HeroSlidesResource extends Resource
 {
+    protected static string|UnitEnum|null $navigationGroup = 'Homepage';
+      protected static ?int $navigationSort = 1;
     protected static ?string $model = HeroSlides::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
