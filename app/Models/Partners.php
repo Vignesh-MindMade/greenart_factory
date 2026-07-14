@@ -10,6 +10,13 @@ class Partners extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+             ->useDisk('cloudinary')
+             ->singleFile();
+    }
+
     //
     protected $fillable = [
         'name',
