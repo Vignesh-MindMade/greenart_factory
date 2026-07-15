@@ -19,7 +19,7 @@ class PortfolioProject extends Model implements HasMedia
     use InteractsWithMedia;
     
     //
-    protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status'];
+    protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status', 'is_featured', 'featured_order'];
 
        public function registerMediaCollections(): void
     {

@@ -6,6 +6,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Schemas\Components\Section;
 
 class ProductForm
 {
@@ -33,6 +35,14 @@ class ProductForm
                         'draft' => 'Draft',
                         'published' => 'Published',
                         'archived' => 'Archived',
+                    ]),
+                Section::make('Media')
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('cover_image')
+                            ->collection('products')
+                            ->imagePreviewHeight('200')
+                            ->required()
+                            ->preserveFilenames(),
                     ]),
             ]);
     }

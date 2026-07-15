@@ -28,6 +28,7 @@ class ProductController extends Controller
                 'id'       => $product->id,
                 'name'     => $product->name,
                 'slug'     => $product->slug,
+                'cover_image' => $product->getFirstMediaUrl('products'),
                 'variants' => $product->variants->map(fn ($variant) => [
                     'id'     => $variant->id,
                     'name'   => $variant->name,
@@ -61,6 +62,7 @@ class ProductController extends Controller
                 'id'       => $product->id,
                 'name'     => $product->name,
                 'slug'     => $product->slug,
+                'cover_image' => $product->getFirstMediaUrl('products'),
                 'variants' => $product->variants->map(fn ($variant) => [
                     'id'     => $variant->id,
                     'name'   => $variant->name,

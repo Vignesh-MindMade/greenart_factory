@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Toggle;
+
 
 class PortfolioProjectForm
 {
@@ -53,6 +55,15 @@ class PortfolioProjectForm
                     'published' => 'Published',
                     'archived' => 'Archived',
                 ]),
+                Grid::make(2)->schema([
+    Toggle::make('is_featured')
+        ->label('Show on Homepage')
+        ->default(false),
+    TextInput::make('featured_order')
+        ->numeric()
+        ->default(0)
+        ->label('Homepage Display Order'),
+]),
 
 
 Section::make('Media')
