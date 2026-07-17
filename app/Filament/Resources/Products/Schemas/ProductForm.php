@@ -41,7 +41,7 @@ class ProductForm
                         SpatieMediaLibraryFileUpload::make('cover_image')
                             ->collection('products')
                             ->imagePreviewHeight('200')
-                            ->required()
+                            
                             ->preserveFilenames(),
                     ]),
             ]);
