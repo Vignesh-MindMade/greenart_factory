@@ -3,7 +3,6 @@
 namespace App\Support\Media;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
 
 class CloudinaryUrlGenerator extends DefaultUrlGenerator
@@ -14,48 +13,51 @@ class CloudinaryUrlGenerator extends DefaultUrlGenerator
             return parent::getUrl();
         }
 
-        // Cache per UUID — one API call per media item per day
-        // UUID never changes even if the file is replaced
         return Cache::remember(
             'cloudinary_url_' . $this->media->uuid,
             now()->addDay(),
-            fn () => $this->fetchRealCloudinaryUrl()
+            fn () => $this->buildOptimizedUrl()
         );
     }
 
-    private function fetchRealCloudinaryUrl(): string
+    private function buildOptimizedUrl(): string
     {
         try {
-            // getPathRelativeToRoot() = "31/service_living_plant_care.jpg"
+            // "22/serenity-cover.png" — extension is part of public_id (codebar-ag behaviour)
             $path = $this->getPathRelativeToRoot();
 
-            // $adapter->cloudinary is the Cloudinary SDK client
-            // (confirmed accessible from earlier tinker session)
-            $adapter = Storage::disk('cloudinary')->getAdapter();
-            $cloudinary = $adapter->cloudinary;
-
-            // Build the full public_id — same logic as CloudinaryPathNormalizer::prefixed()
-            $folder = config('flysystem-cloudinary.folder'); // reads CLOUDINARY_FOLDER from .env
+            $folder = config('flysystem-cloudinary.folder');
             $publicId = $folder
                 ? trim($folder, '/') . '/' . ltrim($path, '/')
                 : ltrim($path, '/');
-            // Result: "gaf/31/service_living_plant_care.jpg"
+            // "gaf/22/serenity-cover.png"
 
-            // Admin API — READ ONLY, returns asset metadata including real secure_url
-            // This is the same API that returned the working URL in your earlier tinker test
-            $asset = $cloudinary->adminApi()->asset($publicId);
+            // Extract format from file_name — needed as URL suffix so Cloudinary
+            // can match public_id correctly (which includes the extension)
+            $extension = pathinfo($this->media->file_name, PATHINFO_EXTENSION) ?: 'jpg';
+            // "png"
 
-            return $asset['secure_url'];
-            // Returns: "https://res.cloudinary.com/.../v1784013495/gaf/31/service_living_plant_care.jpg.jpg"
+            $cloudName = config('filesystems.disks.cloudinary.cloud_name');
+
+            // URL anatomy:
+            //   /f_auto,q_auto/gaf/22/serenity-cover.png.png
+            //   Cloudinary parses: public_id = "gaf/22/serenity-cover.png"  ← matches stored asset ✅
+            //                      format suffix = ".png"                    ← overridden by f_auto ✅
+            //   f_auto serves webp/avif/jpg based on browser Accept header
+            //   q_auto picks optimal quality — typically 60-80% smaller than original
+            return sprintf(
+                'https://res.cloudinary.com/%s/image/upload/f_auto,q_auto/%s.%s',
+                $cloudName,
+                $publicId,
+                $extension
+            );
+            // "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/22/serenity-cover.png.png"
 
         } catch (\Exception) {
-            // Network error, asset not found, etc — fall back rather than crash
             return parent::getUrl();
         }
     }
 
-    // Cloudinary has no concept of expiring signed URLs
-    // Return the permanent public URL instead of throwing
     public function getTemporaryUrl(\DateTimeInterface $expiration, array $options = []): string
     {
         return $this->getUrl();
