@@ -61,7 +61,7 @@ class HomepageController extends Controller
             ->where('is_featured', true)
             ->orderBy('featured_order')
             ->limit(6)
-            ->with(['category:id,name,slug', 'location:id,name,slug'])
+            ->with(['category:id,name,slug', 'location:id,name,slug','sectors:id,name,slug'])
             ->get()
             ->map(fn ($project) => [
                 'id'          => $project->id,
@@ -69,6 +69,9 @@ class HomepageController extends Controller
                 'slug'        => $project->slug,
                 'cover_image' => $project->getFirstMediaUrl('cover_image'),
                 'category'    => $project->category?->name,
+                'sectors' => $project->sectors
+                ->pluck('name')
+                ->values(),
                 'location'    => $project->location?->name,
             ]);
 
