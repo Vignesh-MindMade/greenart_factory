@@ -91,7 +91,7 @@ class HomepageController extends Controller
                 'customer_name'  => $t->customer_name,
                 'customer_title' => $t->customer_title,
                 'quote'          => $t->quote,
-                'avatar'         => $t->getFirstMediaUrl('testimonial_image'),
+                'avatar'         => $t->getFirstMediaUrl('testimonial_images'),
             ]);
 
         return response()->json(['data' => $testimonials]);
@@ -109,7 +109,7 @@ class HomepageController extends Controller
                 'id'          => $p->id,
                 'name'        => $p->name,
                 'website_url' => $p->website_url,
-                'logo'        => $p->getFirstMediaUrl('partner_logo'),
+                'logo'        => $p->getFirstMediaUrl('partners'),
             ]);
 
         return response()->json(['data' => $partners]);
