@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TextArea;
+
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Select;
@@ -27,6 +30,12 @@ class ProductForm
                 TextInput::make('slug')
                     ->required() ->maxLength(255)
                     ->unique(ignoreRecord: true),
+
+                Textarea::make('description')
+                ->rows(3)
+                ->maxLength(1000)
+                ->helperText('Short summary shown on product category (max 500 chars)')
+                    ->columnSpanFull(),
                     
                 Select::make('status')
                     ->required()

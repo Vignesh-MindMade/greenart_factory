@@ -170,6 +170,7 @@ public function productsPreview(): JsonResponse
             'id'          => $product->id,
             'name'        => $product->name,
             'slug'        => $product->slug,
+            'description' => $product->description,
             // Product-level cover image (the large featured card)
             'cover_image' => $product->getFirstMediaUrl('cover_image'),
             // CTA: /products/moss-creations

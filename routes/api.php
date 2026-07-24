@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\HomepageController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ProductCategoryController;
+
 
 Route::get('/', [HomepageController::class, 'index']);
 
@@ -31,6 +33,12 @@ Route::prefix('homepage')->group(function () {
     Route::get('/partners',         [HomepageController::class, 'partners']);
     Route::get('/blog-preview',     [HomepageController::class, 'blogPreview']);
     Route::get('/products-preview', [HomepageController::class, 'productsPreview']);
+});
+
+
+// Product Category
+Route::prefix('productcategory')->group(function(){
+    Route::get('/categories',[ProductCategoryController::class, 'productsCategory']);
 });
 
 // ── BLOG ──────────────────────────────────────────────────

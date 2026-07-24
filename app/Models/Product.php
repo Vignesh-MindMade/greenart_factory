@@ -21,7 +21,7 @@ class Product extends Model implements HasMedia
     
     //
     protected $fillable = [
-       'name', 'slug', 'status'
+       'name', 'slug', 'status','description'
     ];
     public function variants(): HasMany
     {
