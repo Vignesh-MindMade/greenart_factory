@@ -16,6 +16,8 @@ class BlogPosts extends Model implements HasMedia
     {
         $this->addMediaCollection('Blog_post_image')
             ->useDisk('cloudinary');
+        $this->addMediaCollection('author_image')
+            ->useDisk('cloudinary');
     }
 
     //
@@ -25,6 +27,8 @@ class BlogPosts extends Model implements HasMedia
         'slug',
         'excerpt',
         'content',
+        'author',
+        'blog_date',
         'published_at',
         'sort_order',
         'status',
@@ -32,6 +36,7 @@ class BlogPosts extends Model implements HasMedia
 
     protected $casts = [
         'published_at' => 'datetime',
+        'blog_date' => 'datetime',
     ];
 
     public function blogs(): BelongsTo

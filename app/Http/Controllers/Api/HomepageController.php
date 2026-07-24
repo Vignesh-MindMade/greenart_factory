@@ -136,6 +136,9 @@ class HomepageController extends Controller
                 'slug'         => $post->slug,
                 'excerpt'      => $post->excerpt,
                 'category'     => $post->blogs?->name,
+                'author' => $post->author,
+                'avatar'=>$post->getFirstMediaUrl('author_image'),
+                'blog_date'=>$post->blog_date?->toISOString(),
                 'published_at' => $post->published_at?->toISOString(),
                 'image'        => $post->getFirstMediaUrl('cover_image'),
             ]);

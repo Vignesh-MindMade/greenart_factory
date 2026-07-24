@@ -39,7 +39,7 @@ class ProductForm
                 Section::make('Media')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('cover_image')
-                            ->collection('products')
+                            ->collection('cover_image')
                             ->imagePreviewHeight('200')
                             
                             ->preserveFilenames(),

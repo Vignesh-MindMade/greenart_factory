@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\BlogPosts\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -62,6 +63,7 @@ class BlogPostsForm
                 ->maxLength(500)
                 ->helperText('Short summary shown on blog listing cards (max 500 chars)')
                     ->columnSpanFull(),
+
                   RichEditor::make('content')
                 ->columnSpanFull()
                 ->toolbarButtons([
@@ -71,6 +73,26 @@ class BlogPostsForm
                     'blockquote', 'link',
                     'undo', 'redo',
                 ]),
+
+                Textinput::make('author')
+                ->maxLength(255)
+                ->helperText('Author Name'),
+
+                DatePicker::make('blog_date')
+                    ->nullable()
+                    ->label('Blog-Date')
+                    ->helperText('Date of publishing'),
+
+                     Section::make('Author Image')->schema([
+                SpatieMediaLibraryFileUpload::make('author_image')
+                    ->collection('author_image')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->imagePreviewHeight('250')
+                    ->preserveFilenames()
+                    ->label('Avatar Image (used on blog listing cards)'),
+            ]),
+                
+
                   Grid::make(2)->schema([
                 Select::make('status')
                     ->required()
