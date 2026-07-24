@@ -25,6 +25,12 @@ class PageSectionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'section_key';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+{
+    return parent::getEloquentQuery()
+        ->where('section_key', 'not like', 'about_%');
+}
+
     public static function form(Schema $schema): Schema
     {
         return PageSectionForm::configure($schema);

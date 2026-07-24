@@ -15,7 +15,7 @@ use Filament\Tables\Table;
 use UnitEnum;
 use BackedEnum;
 
-class AboutSectionResource extends Resource
+class AboutSectionResource1 extends Resource
 {
     protected static ?string $model = PageSection::class;
     protected static string|UnitEnum|null $navigationGroup = 'About';    // ← ?string not UnitEnum

@@ -22,6 +22,22 @@ class PageSectionSeeder extends Seeder
                 'cta_label'   => 'Explore the Blog',
                 'cta_url'     => '/blog',
             ],
+
+            'about_hero'         => ['title' => 'ABOUT US'],
+'about_story'        => ['title' => 'The Road Here', 'subtitle' => null],
+'about_mission'      => ['title' => 'Our Mission'],
+'about_vision'       => ['title' => 'Our Vision'],
+'about_core_values'  => ['title' => 'CORE VALUES'],
+'about_team'         => ['title' => 'Meet Our Team', 'subtitle' => 'Our dedicated team of biophilic design experts...'],
+'about_facility'     => [
+    'title'      => 'Workshop and Production Facility',
+    'subtitle'   => 'Workshop & Production Facility',
+    'cta_label'  => 'Contact Us',
+    'cta_url'    => '/contact-us',
+    'cta2_label' => 'Book a Studio Visit',
+    'cta2_url'   => '/contact-us#studio-visit',
+],
+'about_certifications' => ['title' => 'Certifications', 'subtitle' => 'Certified Excellence. Sustainable Commitment.'],
         ];
 
         foreach ($sections as $key => $attributes) {
