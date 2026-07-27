@@ -67,6 +67,9 @@ class BlogPostsForm
 
                   RichEditor::make('content')
                 ->columnSpanFull()
+                 ->fileAttachmentsDisk('public')                   // ← local disk, not cloudinary
+    ->fileAttachmentsDirectory('blog/content-images') // ← storage/app/public/blog/content-images
+    ->fileAttachmentsVisibility('public')
                 ->toolbarButtons([
         ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
         ['h2', 'h3'],
@@ -76,13 +79,13 @@ class BlogPostsForm
         ['undo', 'redo'],
     ]),
 
-                Textinput::make('author')
+                TextInput::make('author')
                 ->maxLength(255)
                 ->helperText('Author Name'),
 
                 DatePicker::make('blog_date')
                     ->nullable()
-                    ->label('Blog-Date')
+                    ->label('Blog Date')
                     ->helperText('Date of publishing'),
 
                      Section::make('Author Image')->schema([
