@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
+
 class BlogPostsResource extends Resource
 {
         protected static string|UnitEnum|null $navigationGroup = 'Blogs';

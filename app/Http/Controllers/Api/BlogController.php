@@ -35,7 +35,7 @@ class BlogController extends Controller
                 'id'           => $post->id,
                 'title'        => $post->title,
                 'slug'         => $post->slug,
-                'excerpt'      => $post->excerpt,
+                'content'      => $post->content,
                 'blogs'     => [
                     'name' => $post->blogs?->name,
                     'slug' => $post->blogs?->slug,
