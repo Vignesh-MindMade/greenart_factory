@@ -18,6 +18,16 @@ class Product extends Model implements HasMedia
         $this->addMediaCollection('cover_image')
              ->useDisk('cloudinary')
              ->singleFile();
+
+        // Wide banner at the top of this collection's gallery page.
+        $this->addMediaCollection('gallery_hero')
+             ->useDisk('cloudinary')
+             ->singleFile();
+
+        // BRD FR-3.3 — standalone gallery images not tied to any project.
+        // Merged with project-sourced images by GalleryService.
+        $this->addMediaCollection('product_gallery')
+             ->useDisk('cloudinary');
     }
     
     //

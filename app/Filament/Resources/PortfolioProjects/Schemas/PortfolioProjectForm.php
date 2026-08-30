@@ -4,6 +4,9 @@ namespace App\Filament\Resources\PortfolioProjects\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use App\Models\PortfolioProject;
+use App\Services\GalleryService;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Filament\Schemas\Components\Grid;
@@ -85,6 +88,43 @@ Section::make('Media')
             ->maxFiles(20)
              ->preserveFilenames()
             ->label('Project Gallery Images'),
+    ]),
+
+// BRD section 6 — images from a published project appear automatically in the
+// gallery of every collection it is tagged to. Untick one to keep it off those
+// pages (internal or before-work shots). Nothing is re-uploaded either way.
+Section::make('Product gallery sync')
+    ->description('Which of this project\'s images may appear on linked collection gallery pages.')
+    ->collapsed()
+    ->visibleOn('edit')
+    ->schema([
+        CheckboxList::make('gallery_visible_media')
+            ->label('Show in collection galleries')
+            ->options(fn (?PortfolioProject $record): array => $record
+                ? $record->getMedia('cover_image')
+                    ->concat($record->getMedia('project_images'))
+                    ->mapWithKeys(fn ($media) => [$media->id => $media->name ?: $media->file_name])
+                    ->toArray()
+                : [])
+            ->afterStateHydrated(function (CheckboxList $component, ?PortfolioProject $record): void {
+                if (! $record) {
+                    return;
+                }
+
+                // Default is shown, so only an explicit false opts an image out.
+                $component->state(
+                    $record->getMedia('cover_image')
+                        ->concat($record->getMedia('project_images'))
+                        ->filter(fn ($media) => $media->getCustomProperty(GalleryService::SHOW_IN_GALLERY, true) !== false)
+                        ->pluck('id')
+                        ->map(fn ($id) => (string) $id)
+                        ->toArray()
+                );
+            })
+            ->dehydrated(false)   // persisted by EditPortfolioProject::afterSave()
+            ->bulkToggleable()
+            ->columns(2)
+            ->helperText('Unticked images stay on this project page but are hidden from gallery pages.'),
     ]),
                 
         ]);

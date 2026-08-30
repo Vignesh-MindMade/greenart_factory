@@ -16,6 +16,8 @@ class PageSectionSeeder extends Seeder
             'services'     => ['title' => 'SERVICES', 'subtitle' => null],
             'testimonials' => ['title' => 'TESTIMONIALS', 'subtitle' => 'What Our Customers Say'],
             'partners'     => ['title' => "Clients We've Partnered With", 'subtitle' => null],
+            // Shared by every collection gallery page — one design, one copy set.
+            'gallery'      => ['title' => 'gallery', 'subtitle' => 'view our gallery'],
             'blog'         => [
                 'title'       => 'Blogs & Insights',
                 'description' => 'Explore curated articles...',

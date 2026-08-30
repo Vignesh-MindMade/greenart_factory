@@ -54,6 +54,28 @@ class ProductForm
                             ->preserveFilenames(),
                     ]),
 
+                Section::make('Gallery page')
+                    ->description('Drives /gallery/' . '{slug}. Project images flow in automatically — these are the extras.')
+                    ->collapsed()
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('gallery_hero')
+                            ->collection('gallery_hero')
+                            ->label('Hero banner')
+                            ->image()
+                            ->imagePreviewHeight('150')
+                            ->preserveFilenames()
+                            ->helperText('Wide banner at the top of the gallery page.'),
+                        SpatieMediaLibraryFileUpload::make('product_gallery')
+                            ->collection('product_gallery')
+                            ->label('Standalone gallery images')
+                            ->multiple()
+                            ->reorderable()
+                            ->image()
+                            ->maxFiles(40)
+                            ->preserveFilenames()
+                            ->helperText('Images not tied to any project. Images from published projects linked to this collection appear automatically and do not need re-uploading.'),
+                    ]),
+
                 Section::make('Varieties section')
                     ->description('Header copy for the texture grid on the product detail page. The varieties themselves are managed in the tab below, after saving.')
                     ->collapsed()

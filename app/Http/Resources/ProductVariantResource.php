@@ -40,7 +40,8 @@ class ProductVariantResource extends JsonResource
             ],
 
             'project_url' => $project ? '/portfolio/' . $project->slug : null,
-            'gallery_url' => '/gallery?product=' . $this->product->slug . '&variant=' . $this->slug,
+            // The gallery is per collection — there is no variant-scoped view.
+            'gallery_url' => '/gallery/' . $this->product->slug,
         ];
     }
 }

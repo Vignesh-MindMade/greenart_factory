@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FilterController;
+use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\PortfolioProjectController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
@@ -20,6 +21,8 @@ use App\Http\Controllers\Api\BlogController;
 Route::prefix('v1')->group(function () {
     // Page endpoints — one request per screen.
     Route::get('/pages/products', [ProductController::class, 'page']);
+    // One gallery page per collection; the same screen serves all of them.
+    Route::get('/pages/gallery/{slug}', [GalleryController::class, 'show']);
 
     // Entity endpoints.
     Route::get('/products', [ProductController::class, 'index']);
