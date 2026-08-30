@@ -7,6 +7,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +17,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -68,6 +70,16 @@ class VarietiesRelationManager extends RelationManager
                             ->default(0),
                     ]),
 
+                Select::make('status')
+                    ->required()
+                    ->default('draft')
+                    ->options([
+                        'draft' => 'Draft',
+                        'published' => 'Published',
+                        'archived' => 'Archived',
+                    ])
+                    ->helperText('Only published varieties appear in the texture grid.'),
+
                 Textarea::make('description')
                     ->rows(4)
                     ->maxLength(1000)
@@ -105,10 +117,22 @@ class VarietiesRelationManager extends RelationManager
                 TextColumn::make('description')
                     ->limit(60)
                     ->toggleable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'archived'  => 'danger',
+                        default     => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived']),
             ])
             ->headerActions([
                 CreateAction::make(),

@@ -18,6 +18,7 @@ class ProductVariety extends Model implements HasMedia
         'slug',
         'description',
         'sort_order',
+        'status',
     ];
 
     protected $casts = [

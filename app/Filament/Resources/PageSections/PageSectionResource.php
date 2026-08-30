@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PageSections;
 
 use App\Filament\Resources\PageSections\Pages\CreatePageSection;
+use App\Filament\Resources\PageSections\RelationManagers\ContentBlocksRelationManager;
 use App\Filament\Resources\PageSections\Pages\EditPageSection;
 use App\Filament\Resources\PageSections\Pages\ListPageSections;
 use App\Filament\Resources\PageSections\Schemas\PageSectionForm;
@@ -48,7 +49,7 @@ class PageSectionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ContentBlocksRelationManager::class,
         ];
     }
 

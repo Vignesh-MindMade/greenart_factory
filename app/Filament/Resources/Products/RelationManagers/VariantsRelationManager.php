@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -73,6 +74,15 @@ class VariantsRelationManager extends RelationManager
                             ->required()
                             ->numeric()
                             ->default(0),
+                        Select::make('status')
+                            ->required()
+                            ->default('draft')
+                            ->options([
+                                'draft' => 'Draft',
+                                'published' => 'Published',
+                                'archived' => 'Archived',
+                            ])
+                            ->helperText('Only published blocks appear on the product detail page.'),
                     ]),
 
                 Section::make('Specification card')
@@ -146,6 +156,14 @@ class VariantsRelationManager extends RelationManager
                     ->label('Projects')
                     ->counts('portfolioProjects')
                     ->badge(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'archived'  => 'danger',
+                        default     => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -156,7 +174,8 @@ class VariantsRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived']),
             ])
             ->headerActions([
                 CreateAction::make(),

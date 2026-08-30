@@ -28,6 +28,7 @@ class ProductVariant extends Model implements HasMedia
         'spec_value',
         'spec_tags',
         'sort_order',
+        'status',
     ];
 
     protected $casts = [

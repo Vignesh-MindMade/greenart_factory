@@ -162,7 +162,9 @@ public function productsPreview(): JsonResponse
     $products = Product::query()
         ->where('status', 'published')
         ->with([
-            'variants' => fn ($q) => $q->orderBy('name'),
+            'media',
+            'variants' => fn ($q) => $q->where('status', 'published'),
+            'variants.media',
         ])
         ->orderBy('name')
         ->get()
@@ -184,7 +186,9 @@ public function productsPreview(): JsonResponse
                 // Variant-level image (each small card photo)
                 'image' => $v->getFirstMediaUrl('variant_images'),
                 // CTA: /products/moss-creations/moss-walls
-                'cta_url' => '/products/' . $product->slug . '/' . $v->slug,
+                // Null until the variant link target is decided — no
+                // variant-level screen exists in the design.
+                'cta_url' => null,
             ]),
         ]);
 

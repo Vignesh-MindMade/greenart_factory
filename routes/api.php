@@ -9,13 +9,40 @@ use App\Http\Controllers\Api\HomepageController;
 use App\Http\Controllers\Api\BlogController;
 
 
+/*
+|--------------------------------------------------------------------------
+| v1 — page and entity endpoints
+|--------------------------------------------------------------------------
+| Envelope: { data } or { data, meta }. Page endpoints serve one screen in one
+| request; entity endpoints serve search, filtering and pagination.
+| Full contract: docx/API-REFERENCE.md
+*/
+Route::prefix('v1')->group(function () {
+    // Page endpoints — one request per screen.
+    Route::get('/pages/products', [ProductController::class, 'page']);
+
+    // Entity endpoints.
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/{slug}', [ProductController::class, 'show']);
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Legacy — unversioned, deprecated
+|--------------------------------------------------------------------------
+| Kept so nothing already pointed at these URLs breaks. Products routes now
+| return the v1 payload plus the legacy success/message keys — additive only.
+| Remove once the frontend has migrated to /api/v1.
+*/
+
 Route::get('/filters', [FilterController::class, 'index']);
 
 Route::get('/portfolio', [PortfolioProjectController::class, 'index']);
 Route::get('/portfolio/{slug}', [PortfolioProjectController::class, 'show']);
 
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{slug}', [ProductController::class, 'show']);
+Route::get('/products', [ProductController::class, 'legacyIndex']);
+Route::get('/products/{slug}', [ProductController::class, 'legacyShow']);
 
 
 
