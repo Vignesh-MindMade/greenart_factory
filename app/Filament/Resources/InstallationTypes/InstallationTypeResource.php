@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\InstallationTypes;
 
+use UnitEnum;
 use App\Filament\Resources\InstallationTypes\Pages\CreateInstallationType;
 use App\Filament\Resources\InstallationTypes\Pages\EditInstallationType;
 use App\Filament\Resources\InstallationTypes\Pages\ListInstallationTypes;
@@ -19,6 +20,10 @@ class InstallationTypeResource extends Resource
     protected static ?string $model = InstallationType::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Taxonomies';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'name';
 

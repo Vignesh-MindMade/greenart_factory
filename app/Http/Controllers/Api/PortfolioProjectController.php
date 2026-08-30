@@ -5,11 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PortfolioProject;
-use App\Models\PortfolioProjectCategory;
-use App\Models\InstallationType;
-use App\Models\Location;
-use App\Models\Product;
-use App\Models\Sector;
 
 class PortfolioProjectController extends Controller
 {

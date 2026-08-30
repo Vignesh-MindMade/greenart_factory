@@ -21,6 +21,11 @@ class PortfolioProject extends Model implements HasMedia
     //
     protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status', 'is_featured', 'featured_order'];
 
+    protected $casts = [
+        'is_featured' => 'boolean',
+        'featured_order' => 'integer',
+    ];
+
        public function registerMediaCollections(): void
     {
         $this->addMediaCollection('project_images')

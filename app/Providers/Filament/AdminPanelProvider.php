@@ -34,6 +34,14 @@ class AdminPanelProvider extends PanelProvider
             ])
         ->brandLogo(asset('images/GAF-logo.png'))
         ->brandLogoHeight('3rem')
+            // Declared explicitly — without this, group order is non-deterministic.
+            ->navigationGroups([
+                'Homepage',
+                'Catalogue',
+                'Portfolio',
+                'Taxonomies',
+                'Blogs',
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

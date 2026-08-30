@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products;
 
+use UnitEnum;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
@@ -14,12 +15,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use App\Filament\Resources\Products\RelationManagers\VariantsRelationManager;
+use App\Filament\Resources\Products\RelationManagers\VarietiesRelationManager;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Catalogue';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -37,6 +43,7 @@ class ProductResource extends Resource
     {
         return [
             VariantsRelationManager::class,
+            VarietiesRelationManager::class,
         ];
     }
 

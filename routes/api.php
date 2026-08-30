@@ -7,10 +7,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\HomepageController;
 use App\Http\Controllers\Api\BlogController;
-use App\Http\Controllers\Api\ProductCategoryController;
 
-
-Route::get('/', [HomepageController::class, 'index']);
 
 Route::get('/filters', [FilterController::class, 'index']);
 
@@ -37,8 +34,10 @@ Route::prefix('homepage')->group(function () {
 
 
 // Product Category
+// Same payload as /api/homepage/products-preview — kept as a separate URL for the
+// products page. Split the implementations if the two ever need to diverge.
 Route::prefix('productcategory')->group(function(){
-    Route::get('/categories',[ProductCategoryController::class, 'productsCategory']);
+    Route::get('/categories',[HomepageController::class, 'productsPreview']);
 });
 
 // ── BLOG ──────────────────────────────────────────────────

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PortfolioProjects;
 
+use UnitEnum;
 use App\Filament\Resources\PortfolioProjects\Pages\CreatePortfolioProject;
 use App\Filament\Resources\PortfolioProjects\Pages\EditPortfolioProject;
 use App\Filament\Resources\PortfolioProjects\Pages\ListPortfolioProjects;
@@ -21,6 +22,10 @@ class PortfolioProjectResource extends Resource
     protected static ?string $model = PortfolioProject::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'title';
 

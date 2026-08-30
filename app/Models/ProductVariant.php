@@ -18,7 +18,22 @@ class ProductVariant extends Model implements HasMedia
         $this->addMediaCollection('variant_images')
             ->useDisk('cloudinary');
     }
-    protected $fillable = ['product_id', 'name','slug'];
+    protected $fillable = [
+        'product_id',
+        'name',
+        'slug',
+        'description',
+        'display_no',
+        'spec_label',
+        'spec_value',
+        'spec_tags',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'spec_tags' => 'array',
+        'sort_order' => 'integer',
+    ];
 
     public function product(): BelongsTo
     {

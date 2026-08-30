@@ -73,6 +73,8 @@ class ServiceitemRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->reorderable('sort_order')
+            ->defaultSort('sort_order')
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),

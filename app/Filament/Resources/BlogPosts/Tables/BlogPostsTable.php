@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class BlogPostsTable
@@ -14,9 +15,12 @@ class BlogPostsTable
     {
         return $table
             ->columns([
-                TextColumn::make('blog_category_id')
-                    ->numeric()
-                    ->sortable(),
+                // Relation is named blogs() on BlogPosts, not category().
+                TextColumn::make('blogs.name')
+                    ->label('Category')
+                    ->badge()
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
@@ -28,7 +32,13 @@ class BlogPostsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'archived'  => 'danger',
+                        default     => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -39,7 +49,13 @@ class BlogPostsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('blogs')
+                    ->label('Category')
+                    ->relationship('blogs', 'name')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('status')
+                    ->options(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived']),
             ])
             ->recordActions([
                 EditAction::make(),

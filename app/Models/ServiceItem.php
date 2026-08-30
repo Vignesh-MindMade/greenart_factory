@@ -11,10 +11,13 @@ class ServiceItem extends Model implements HasMedia
 {
     //
     use InteractsWithMedia;
-    protected $fillable = ['service_id', 'name', 'slug', 'order'];
+    protected $fillable = ['service_id', 'name', 'slug', 'sort_order'];
    public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('service_item_images')
+        $this->addMediaCollection('cover_image')
+            ->useDisk('cloudinary')
+            ->singleFile();
+        $this->addMediaCollection('project_images')
             ->useDisk('cloudinary');
     }
     public function service(): BelongsTo

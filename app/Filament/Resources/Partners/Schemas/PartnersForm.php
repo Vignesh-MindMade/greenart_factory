@@ -29,7 +29,7 @@ class PartnersForm
                     ->options([
                         'draft' => 'Draft',
                         'published' => 'Published',
-                        'Archive'=>'Archived',
+                        'archived' => 'Archived',
                     ]),
 
                 Section::make('Media')

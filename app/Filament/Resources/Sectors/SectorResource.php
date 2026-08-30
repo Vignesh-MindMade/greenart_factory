@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Sectors;
 
+use UnitEnum;
 use App\Filament\Resources\Sectors\Pages\CreateSector;
 use App\Filament\Resources\Sectors\Pages\EditSector;
 use App\Filament\Resources\Sectors\Pages\ListSectors;
@@ -19,6 +20,10 @@ class SectorResource extends Resource
     protected static ?string $model = Sector::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Taxonomies';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'name';
 

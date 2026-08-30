@@ -50,8 +50,28 @@ class ProductForm
                         SpatieMediaLibraryFileUpload::make('cover_image')
                             ->collection('cover_image')
                             ->imagePreviewHeight('200')
-                            
+
                             ->preserveFilenames(),
+                    ]),
+
+                Section::make('Varieties section')
+                    ->description('Header copy for the texture grid on the product detail page. The varieties themselves are managed in the tab below, after saving.')
+                    ->collapsed()
+                    ->schema([
+                        TextInput::make('varieties_title')
+                            ->label('Section title')
+                            ->maxLength(255)
+                            ->placeholder('Choose Your Texture & Feel'),
+                        Textarea::make('varieties_intro')
+                            ->label('Section intro')
+                            ->rows(2)
+                            ->maxLength(500)
+                            ->placeholder('Each moss type brings a distinct character…')
+                            ->columnSpanFull(),
+                        TextInput::make('varieties_footer')
+                            ->label('Closing caption')
+                            ->maxLength(255)
+                            ->placeholder('Choose your favourite texture'),
                     ]),
             ]);
     }

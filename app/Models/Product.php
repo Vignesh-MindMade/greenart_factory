@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\ProductVariant; 
+use App\Models\ProductVariant;
+use App\Models\ProductVariety;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -14,18 +15,30 @@ class Product extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('products')
+        $this->addMediaCollection('cover_image')
              ->useDisk('cloudinary')
              ->singleFile();
     }
     
     //
     protected $fillable = [
-       'name', 'slug', 'status','description'
+        'name',
+        'slug',
+        'status',
+        'description',
+        'varieties_title',
+        'varieties_intro',
+        'varieties_footer',
     ];
+
     public function variants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::class)->orderBy('sort_order');
         // Laravel needs to know: which Model am I connecting to?
+    }
+
+    public function varieties(): HasMany
+    {
+        return $this->hasMany(ProductVariety::class)->orderBy('sort_order');
     }
 }

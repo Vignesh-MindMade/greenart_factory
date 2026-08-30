@@ -14,8 +14,9 @@ class BlogPosts extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('Blog_post_image')
-            ->useDisk('cloudinary');
+        $this->addMediaCollection('cover_image')
+            ->useDisk('cloudinary')
+            ->singleFile();
         $this->addMediaCollection('author_image')
             ->useDisk('cloudinary');
     }

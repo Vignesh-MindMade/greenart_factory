@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Locations;
 
+use UnitEnum;
 use App\Filament\Resources\Locations\Pages\CreateLocation;
 use App\Filament\Resources\Locations\Pages\EditLocation;
 use App\Filament\Resources\Locations\Pages\ListLocations;
@@ -19,6 +20,10 @@ class LocationResource extends Resource
     protected static ?string $model = Location::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Taxonomies';
+
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'name';
 

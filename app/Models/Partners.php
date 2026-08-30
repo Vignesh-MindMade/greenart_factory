@@ -12,7 +12,7 @@ class Partners extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('logo')
+        $this->addMediaCollection('partners')
              ->useDisk('cloudinary')
              ->singleFile();
     }

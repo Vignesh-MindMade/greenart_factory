@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PortfolioCategories;
 
+use UnitEnum;
 use App\Filament\Resources\PortfolioCategories\Pages\CreatePortfolioCategory;
 use App\Filament\Resources\PortfolioCategories\Pages\EditPortfolioCategory;
 use App\Filament\Resources\PortfolioCategories\Pages\ListPortfolioCategories;
@@ -19,6 +20,10 @@ class PortfolioCategoryResource extends Resource
     protected static ?string $model = PortfolioCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Portfolio';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'name';
 

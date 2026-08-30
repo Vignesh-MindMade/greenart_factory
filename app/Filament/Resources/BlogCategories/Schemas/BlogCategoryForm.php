@@ -35,7 +35,7 @@ class BlogCategoryForm
                     ->options([
                         'draft' => 'Draft',
                         'published' => 'Published',
-                        
+                        'archived' => 'Archived',
                     ]),
             ]);
     }

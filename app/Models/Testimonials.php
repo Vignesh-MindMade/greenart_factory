@@ -11,7 +11,7 @@ class Testimonials extends Model implements HasMedia
         use InteractsWithMedia;
          public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('testimonial_image')
+        $this->addMediaCollection('testimonial_images')
             ->useDisk('cloudinary')
             ->singleFile();
     }
