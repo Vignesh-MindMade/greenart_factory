@@ -18,6 +18,13 @@ class PageSectionSeeder extends Seeder
             'partners'     => ['title' => "Clients We've Partnered With", 'subtitle' => null],
             // Shared by every collection gallery page — one design, one copy set.
             'gallery'      => ['title' => 'gallery', 'subtitle' => 'view our gallery'],
+            'portfolio'    => [
+                'title'       => 'Creating Living Spaces Inspired by Nature, Designed for Modern Living',
+                'subtitle'    => 'portfolio',
+                'description' => 'Explore curated landscape and botanical installations that transform everyday environments into memorable experiences.',
+                'cta_label'   => 'View Products',
+                'cta_url'     => '/products',
+            ],
             'blog'         => [
                 'title'       => 'Blogs & Insights',
                 'description' => 'Explore curated articles...',

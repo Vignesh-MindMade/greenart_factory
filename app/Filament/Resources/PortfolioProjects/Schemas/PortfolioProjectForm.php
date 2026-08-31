@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\PortfolioProjects\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use App\Models\PortfolioProject;
 use App\Services\GalleryService;
@@ -68,6 +70,44 @@ class PortfolioProjectForm
         ->label('Homepage Display Order'),
 ]),
 
+
+Section::make('Case study')
+    ->description('Body copy for the project detail page.')
+    ->schema([
+        Textarea::make('excerpt')
+            ->rows(3)
+            ->maxLength(500)
+            ->columnSpanFull()
+            ->helperText('Short blurb on the portfolio listing card.'),
+
+        RichEditor::make('execution')
+            ->label('Our execution')
+            ->columnSpanFull()
+            ->helperText('Opening paragraph of the execution section.'),
+
+        RichEditor::make('key_stages')
+            ->label('Key stages')
+            ->columnSpanFull()
+            ->helperText('Bulleted list of stages. Use the list buttons rather than typing bullet characters.'),
+
+        RichEditor::make('key_highlights')
+            ->label('Key highlights')
+            ->columnSpanFull(),
+    ]),
+
+// BRD FR-2.3 asks for dedicated Challenge and Solution fields. The design
+// renders them as one "our challenge & solution" block — the frontend joins
+// them, so both requirements are met without losing the structure.
+Section::make('Challenge & solution')
+    ->description('Stored separately per BRD FR-2.3; rendered as one block on the site.')
+    ->schema([
+        RichEditor::make('challenge')
+            ->label('Challenge faced')
+            ->columnSpanFull(),
+        RichEditor::make('solution')
+            ->label('Solution provided')
+            ->columnSpanFull(),
+    ]),
 
 Section::make('Media')
     ->schema([

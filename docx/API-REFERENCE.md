@@ -338,6 +338,253 @@ The product detail screen — Figma node `545:571`.
 
 ---
 
+## Portfolio
+
+### `GET /api/v1/pages/portfolio`
+
+The portfolio listing screen: hero copy, every filter option, and the first page
+of results — one request, no second call to populate the filter bar.
+
+**Parameters** — all optional; the same set `/api/v1/projects` accepts.
+
+| Name | Notes |
+|---|---|
+| `search` | Partial match on project title |
+| `category` | Slug. The design labels this filter **Project Type** |
+| `sector` · `installation_type` · `location` | Slug |
+| `product_variant` | Slug — projects tagged to a given variant |
+| `page` · `per_page` | Default 12, capped at 48 |
+
+**Response**
+
+```json
+{
+    "data": {
+        "section": {
+            "title": "Creating Living Spaces Inspired by Nature, Designed for Modern Living",
+            "subtitle": "portfolio",
+            "description": "Explore curated landscape and botanical installations that transform everyday environments into memorable experiences.",
+            "cta_label": "View Products",
+            "cta_url": "/products"
+        },
+        "filters": {
+            "categories": [
+                {
+                    "name": "Exterior Projects",
+                    "slug": "exterior-projects"
+                },
+                {
+                    "name": "Interior Projects",
+                    "slug": "interior-projects"
+                }
+            ],
+            "installation_types": [
+                {
+                    "name": "Indoor",
+                    "slug": "indoor"
+                },
+                {
+                    "name": "Outdoor",
+                    "slug": "outdoor"
+                }
+            ],
+            "locations": [
+                {
+                    "name": "Abudhabi",
+                    "slug": "abudhabi",
+                    "country": "AE"
+                },
+                {
+                    "name": "Dubai",
+                    "slug": "dubai",
+                    "country": "AE"
+                }
+            ],
+            "sectors": [
+                {
+                    "name": "Beachside",
+                    "slug": "beachside"
+                },
+                {
+                    "name": "Commercial",
+                    "slug": "commercial"
+                }
+            ]
+        },
+        "projects": [
+            {
+                "id": 3,
+                "title": "Skyline Rooftop Garden",
+                "slug": "skyline-rooftop-garden",
+                "excerpt": null,
+                "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/70/projects5.jpg.jpg",
+                "category": {
+                    "name": "Exterior Projects",
+                    "slug": "exterior-projects"
+                },
+                "location": {
+                    "name": "Dubai",
+                    "slug": "dubai",
+                    "country": "AE"
+                },
+                "sectors": [
+                    {
+                        "name": "Beachside",
+                        "slug": "beachside"
+                    }
+                ],
+                "meta_line": "Beachside · Dubai · AE",
+                "cta_url": "/portfolio/skyline-rooftop-garden"
+            }
+        ]
+    },
+    "meta": {
+        "current_page": 1,
+        "last_page": 3,
+        "per_page": 1,
+        "total": 3
+    }
+}
+```
+
+**Notes**
+
+- `filters` holds the dropdown options. Render the bar from this, not from
+  `/api/filters` (which is unversioned and leaks unpublished records).
+- `meta.total` drives the "Total projects (N)" counter.
+- `projects[].meta_line` is pre-joined server-side — "Commercial · Dubai · AE".
+  Which parts exist varies per project, so the conditional logic lives in the
+  backend. Render it as-is.
+
+---
+
+### `GET /api/v1/projects`
+
+Entity list. Same filters and shape as the `projects` array above, with
+`{ data, meta }`. Use it when the user changes a filter; use the page endpoint
+for the initial render.
+
+---
+
+### `GET /api/v1/projects/{slug}`
+
+The project detail screen — Figma node `640:2214`.
+
+**Response**
+
+```json
+{
+    "data": {
+        "id": 2,
+        "title": "Corporate Elegance",
+        "slug": "corporate-elegance",
+        "excerpt": "Preserved moss walls bring nature indoors with a timeless, maintenance-free aesthetic. They enhance interiors with rich texture, acoustic comfort, and biophilic appeal.",
+        "status": "published",
+        "hero_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/69/projects2.jpg.jpg",
+        "category": {
+            "name": "Interior Projects",
+            "slug": "interior-projects"
+        },
+        "location": {
+            "name": "Abudhabi",
+            "slug": "abudhabi",
+            "country": "AE"
+        },
+        "sectors": [
+            {
+                "name": "Commercial",
+                "slug": "commercial"
+            }
+        ],
+        "installation_types": [
+            {
+                "name": "Indoor",
+                "slug": "indoor"
+            }
+        ],
+        "breadcrumb": [
+            {
+                "label": "Home",
+                "url": "/"
+            },
+            {
+                "label": "Interior Projects",
+                "url": "/portfolio?category=interior-projects"
+            },
+            {
+                "label": "Corporate Elegance",
+                "url": null
+            }
+        ],
+        "content": {
+            "execution": "<p>The project involved the installation of five bespoke artificial Olive trees at the head office lobby of Zahid Group in KSA, each standin… (truncated for docs)",
+            "key_stages": "<ul><li>Trunk Selection &amp; Treatment – Handpicked mature trunks treated to ensure durability and lifelike appearance.</li><li>Design Ap… (truncated for docs)",
+            "key_highlights": "<ul><li>Bespoke Artificial Olive Trees – Five trees, each 4m tall with mature, realistic trunks.</li><li>Trunk Craftsmanship – Carefully… (truncated for docs)",
+            "challenge": "<p>This project posed several challenges, including selecting mature, realistic trunks that maintained authenticity and proper scale within … (truncated for docs)",
+            "solution": "<p>To address the project challenges, carefully selected and treated trunks were used to ensure both durability and realistic appearance. Cl… (truncated for docs)"
+        },
+        "gallery": [],
+        "collections": [
+            {
+                "name": "Moss Creations",
+                "slug": "moss-creations",
+                "product_url": "/products/moss-creations",
+                "gallery_url": "/gallery/moss-creations"
+            },
+            {
+                "name": "Bespoke Artificial Trees",
+                "slug": "bespoke-artificial-trees",
+                "product_url": "/products/bespoke-artificial-trees",
+                "gallery_url": "/gallery/bespoke-artificial-trees"
+            }
+        ],
+        "related": [
+            {
+                "id": 1,
+                "title": "Serenity Greens",
+                "slug": "serenity-greens",
+                "excerpt": null,
+                "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/68/projects1.jpg.jpg",
+                "category": {
+                    "name": "Interior Projects",
+                    "slug": "interior-projects"
+                },
+                "location": {
+                    "name": "Abudhabi",
+                    "slug": "abudhabi",
+                    "country": "AE"
+                },
+                "sectors": [
+                    {
+                        "name": "Commercial",
+                        "slug": "commercial"
+                    }
+                ],
+                "meta_line": "Commercial · Abudhabi · AE",
+                "cta_url": "/portfolio/serenity-greens"
+            }
+        ]
+    }
+}
+```
+
+**Field notes**
+
+| Field | Notes |
+|---|---|
+| `breadcrumb[]` | Pre-built: Home › category › title. The last item has `url: null` — it is the current page. |
+| `content.*` | Rich text (HTML) from the admin editor. `key_stages` and `key_highlights` come through as `<ul>` lists. Any field may be `null`. |
+| `content.challenge` / `content.solution` | **Stored as two fields** per BRD FR-2.3, but the design renders them as one "our challenge & solution" block — concatenate them. |
+| `gallery[]` | The PROJECT GALLERY grid. May be `[]`. |
+| `collections[]` | Collections this project is tagged to, via product variants. Carries both `product_url` and `gallery_url`. |
+| `related[]` | Up to 5 projects, same category first, then most recent. Same shape as a listing card. |
+
+> The design's "Related Projects" rail reuses the collection-card component, so
+> its labels read "Collection". This endpoint returns **projects**, matching the
+> section heading. Flag it if the intent was collections.
+
+---
+
 ## Gallery
 
 ### `GET /api/v1/pages/gallery/{slug}`
@@ -458,13 +705,6 @@ They will move under `/api/v1` as each page is rebuilt.
 > collapse into a single `GET /api/v1/pages/home`. Until then, fetch them in
 > parallel with `Promise.all` — never sequentially.
 
-### Portfolio
-
-| Endpoint | Notes |
-|---|---|
-| `GET /api/portfolio` | Filters: `sector`, `location`, `installation_type`, `product_variant` (all by slug). **Returns a bare array — no envelope, and unpaginated.** |
-| `GET /api/portfolio/{slug}` | Bare object, no envelope. |
-
 ### Services, Blog, Filters
 
 | Endpoint | Notes |
@@ -484,6 +724,8 @@ They will move under `/api/v1` as each page is rebuilt.
 | `GET /api/products` | `GET /api/v1/products` | Returns the v1 payload plus `success`/`message`. Additive, so existing code keeps working. |
 | `GET /api/products/{slug}` | `GET /api/v1/products/{slug}` | As above. |
 | `GET /api/productcategory/categories` | `GET /api/v1/pages/products` | Duplicate of `homepage/products-preview`. |
+| `GET /api/portfolio` | `GET /api/v1/pages/portfolio` | **Frozen at the pre-v1 shape**: a bare array, unpaginated, with `category` as a plain string and `sectors`/`installation_types` as string arrays. Filters unchanged. |
+| `GET /api/portfolio/{slug}` | `GET /api/v1/projects/{slug}` | Frozen: bare object, `cover_image`/`images` rather than `hero_image`/`gallery`, and no case-study content. |
 
 Legacy product routes are a thin wrapper over the same code path as v1 — there is
 no second implementation to drift. They will be deleted once the frontend migrates.
@@ -523,6 +765,8 @@ Tracked so the frontend is not surprised.
 2. **Variant `cta_url` is always `null`** — no variant-level screen in the design.
 3. **Five response envelopes remain** across the unversioned endpoints. v1 uses
    one; the rest are frozen until each page is rebuilt.
-4. **`/api/portfolio` is unpaginated** and returns every published project.
-5. **`/api/filters` leaks unpublished records.**
+4. **Legacy `/api/portfolio` is unpaginated** and returns every published
+   project. Deliberate — the shape is frozen. `/api/v1/projects` paginates.
+5. **`/api/filters` leaks unpublished records.** Use the `filters` block on
+   `/api/v1/pages/portfolio` instead.
 6. **No rate limiting** on any endpoint.

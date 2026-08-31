@@ -19,7 +19,21 @@ class PortfolioProject extends Model implements HasMedia
     use InteractsWithMedia;
     
     //
-    protected $fillable = ['category_id', 'location_id', 'title', 'slug', 'status', 'is_featured', 'featured_order'];
+    protected $fillable = [
+        'category_id',
+        'location_id',
+        'title',
+        'slug',
+        'excerpt',
+        'execution',
+        'key_stages',
+        'key_highlights',
+        'challenge',
+        'solution',
+        'status',
+        'is_featured',
+        'featured_order',
+    ];
 
     protected $casts = [
         'is_featured' => 'boolean',

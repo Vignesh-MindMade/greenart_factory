@@ -23,6 +23,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/pages/products', [ProductController::class, 'page']);
     // One gallery page per collection; the same screen serves all of them.
     Route::get('/pages/gallery/{slug}', [GalleryController::class, 'show']);
+    Route::get('/pages/portfolio', [PortfolioProjectController::class, 'page']);
+
+    Route::get('/projects', [PortfolioProjectController::class, 'index']);
+    Route::get('/projects/{slug}', [PortfolioProjectController::class, 'show']);
 
     // Entity endpoints.
     Route::get('/products', [ProductController::class, 'index']);
@@ -41,8 +45,8 @@ Route::prefix('v1')->group(function () {
 
 Route::get('/filters', [FilterController::class, 'index']);
 
-Route::get('/portfolio', [PortfolioProjectController::class, 'index']);
-Route::get('/portfolio/{slug}', [PortfolioProjectController::class, 'show']);
+Route::get('/portfolio', [PortfolioProjectController::class, 'legacyIndex']);
+Route::get('/portfolio/{slug}', [PortfolioProjectController::class, 'legacyShow']);
 
 Route::get('/products', [ProductController::class, 'legacyIndex']);
 Route::get('/products/{slug}', [ProductController::class, 'legacyShow']);
