@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 // use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\PortfolioCategory;
 use App\Models\Location;
@@ -30,6 +31,9 @@ class PortfolioProject extends Model implements HasMedia
         'key_highlights',
         'challenge',
         'solution',
+        'spec_eyebrow',
+        'spec_headline',
+        'spec_body',
         'status',
         'is_featured',
         'featured_order',
@@ -61,6 +65,16 @@ class PortfolioProject extends Model implements HasMedia
     public function productVariants():BelongsToMany
     {
         return $this->belongsToMany(ProductVariant::class, 'portfolio_project_variant');
+    }
+
+    /**
+     * Label/value rows on the specification card — group 'project_spec'.
+     * Shares the content_blocks table with every other ordered list on the site.
+     */
+    public function contentBlocks(): MorphMany
+    {
+        return $this->morphMany(ContentBlock::class, 'blockable')
+            ->orderBy('sort_order');
     }
 
     public function sectors():BelongsToMany

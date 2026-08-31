@@ -153,8 +153,12 @@ const ContentBlock = z.object({
 ```
 
 `value` and `icon` are `null` for `why_choose_us`. They are present because the
-same shape will serve careers benefits, hiring steps, service FAQs, service
-process, core values and company stats as those pages are built.
+same shape serves every other ordered list on the site.
+
+The project detail specification card is the second consumer — there,
+`spec_card.rows[]` is the same table with `title` as the row label and `value`
+as the row value. Careers benefits, hiring steps, service FAQs, service process,
+core values and company stats follow as those pages are built.
 
 ---
 
@@ -523,6 +527,25 @@ The project detail screen — Figma node `640:2214`.
             "challenge": "<p>This project posed several challenges, including selecting mature, realistic trunks that maintained authenticity and proper scale within … (truncated for docs)",
             "solution": "<p>To address the project challenges, carefully selected and treated trunks were used to ensure both durability and realistic appearance. Cl… (truncated for docs)"
         },
+        "spec_card": {
+            "eyebrow": "MOSS WALL INSTALLATION – COMMERCIAL PROJECT",
+            "headline": "This bespoke moss wall creates a calming green backdrop for a modern office workspace.",
+            "body": "<p>This custom-designed moss wall transforms the reception area into a serene and welcoming environment. Made entirely f… (truncated for docs)",
+            "rows": [
+                {
+                    "label": "Area",
+                    "value": "60 m²"
+                },
+                {
+                    "label": "Location",
+                    "value": "Abu Dhabi"
+                },
+                {
+                    "label": "System",
+                    "value": "Preserved Moss Wall"
+                }
+            ]
+        },
         "gallery": [],
         "collections": [
             {
@@ -575,6 +598,8 @@ The project detail screen — Figma node `640:2214`.
 | `breadcrumb[]` | Pre-built: Home › category › title. The last item has `url: null` — it is the current page. |
 | `content.*` | Rich text (HTML) from the admin editor. `key_stages` and `key_highlights` come through as `<ul>` lists. Any field may be `null`. |
 | `content.challenge` / `content.solution` | **Stored as two fields** per BRD FR-2.3, but the design renders them as one "our challenge & solution" block — concatenate them. |
+| `spec_card` | The dark card beside the challenge & solution block. `eyebrow`, `headline` and `body` may each be `null`; `rows` may be `[]`. Hide the card when everything is empty. |
+| `spec_card.rows[]` | Label/value pairs — Area, Location, System, Install Year, Client, and so on. Ordered and published-only. Row labels are free text per project, so render them generically rather than mapping to fixed keys. |
 | `gallery[]` | The PROJECT GALLERY grid. May be `[]`. |
 | `collections[]` | Collections this project is tagged to, via product variants. Carries both `product_url` and `gallery_url`. |
 | `related[]` | Up to 5 projects, same category first, then most recent. Same shape as a listing card. |

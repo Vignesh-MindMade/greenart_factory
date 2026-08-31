@@ -204,7 +204,7 @@ class PortfolioProjectController extends Controller
         $project = PortfolioProject::query()
             ->where('slug', $slug)
             ->where('status', 'published')
-            ->with([...self::RELATIONS, 'productVariants.product:id,name,slug'])
+            ->with([...self::RELATIONS, 'productVariants.product:id,name,slug', 'contentBlocks'])
             ->firstOrFail();
 
         // Prefer projects sharing this one's category, then fall back to the

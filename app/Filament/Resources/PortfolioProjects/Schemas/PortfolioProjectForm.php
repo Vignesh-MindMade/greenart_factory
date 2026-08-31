@@ -109,6 +109,29 @@ Section::make('Challenge & solution')
             ->columnSpanFull(),
     ]),
 
+// The dark card beside the challenge & solution block. Its label/value rows
+// are managed in the Specification rows tab, after saving.
+Section::make('Specification card')
+    ->description('Dark card on the project detail page. Rows are managed in the tab below.')
+    ->collapsed()
+    ->schema([
+        TextInput::make('spec_eyebrow')
+            ->label('Eyebrow')
+            ->maxLength(255)
+            ->placeholder('MOSS WALL INSTALLATION – COMMERCIAL PROJECT')
+            ->columnSpanFull(),
+        Textarea::make('spec_headline')
+            ->label('Headline')
+            ->rows(2)
+            ->maxLength(500)
+            ->placeholder('This bespoke moss wall creates a calming green backdrop for a modern office workspace.')
+            ->columnSpanFull(),
+        RichEditor::make('spec_body')
+            ->label('Body copy')
+            ->columnSpanFull()
+            ->helperText('Paragraphs below the specification rows.'),
+    ]),
+
 Section::make('Media')
     ->schema([
         SpatieMediaLibraryFileUpload::make('cover_image')

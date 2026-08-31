@@ -19,8 +19,12 @@ class ContentBlock extends Model implements HasMedia
     /** Groups currently in use. Add here as each page is built. */
     public const GROUP_WHY_CHOOSE_US = 'why_choose_us';
 
+    /** Label/value rows on the project detail specification card. */
+    public const GROUP_PROJECT_SPEC = 'project_spec';
+
     public const GROUPS = [
         self::GROUP_WHY_CHOOSE_US => 'Why Choose Us',
+        self::GROUP_PROJECT_SPEC  => 'Project specification',
     ];
 
     protected $fillable = [

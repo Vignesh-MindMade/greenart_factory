@@ -4,6 +4,7 @@ namespace App\Filament\Resources\PortfolioProjects;
 
 use UnitEnum;
 use App\Filament\Resources\PortfolioProjects\Pages\CreatePortfolioProject;
+use App\Filament\Resources\PortfolioProjects\RelationManagers\ProjectSpecsRelationManager;
 use App\Filament\Resources\PortfolioProjects\Pages\EditPortfolioProject;
 use App\Filament\Resources\PortfolioProjects\Pages\ListPortfolioProjects;
 use App\Filament\Resources\PortfolioProjects\Schemas\PortfolioProjectForm;
@@ -42,7 +43,7 @@ class PortfolioProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProjectSpecsRelationManager::class,
 
             // ProductVariantsRelationManager::class,
 

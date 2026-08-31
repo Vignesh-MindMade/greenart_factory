@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ContentBlock;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -61,6 +62,22 @@ class ProjectDetailResource extends JsonResource
                 // one "our challenge & solution" block.
                 'challenge'      => $this->challenge,
                 'solution'       => $this->solution,
+            ],
+
+            // The dark card beside the challenge & solution block.
+            'spec_card' => [
+                'eyebrow'  => $this->spec_eyebrow,
+                'headline' => $this->spec_headline,
+                'body'     => $this->spec_body,
+                'rows'     => $this->whenLoaded(
+                    'contentBlocks',
+                    fn () => $this->contentBlocks
+                        ->where('group', ContentBlock::GROUP_PROJECT_SPEC)
+                        ->where('status', 'published')
+                        ->map(fn ($b) => ['label' => $b->title, 'value' => $b->value])
+                        ->values(),
+                    []
+                ),
             ],
 
             'gallery' => $this->getMedia('project_images')
