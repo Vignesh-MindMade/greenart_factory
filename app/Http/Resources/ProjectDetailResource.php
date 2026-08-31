@@ -21,6 +21,22 @@ class ProjectDetailResource extends JsonResource
         return $this;
     }
 
+    /**
+     * Some specification rows are already modelled on the project, so their
+     * value is derived rather than typed — otherwise the two copies drift the
+     * moment someone edits one and not the other.
+     *
+     * Returns null when the label is not a reserved one, in which case the
+     * editor's typed value is used.
+     */
+    private function autoValue(?string $label): ?string
+    {
+        return match (mb_strtolower(trim((string) $label))) {
+            'location' => $this->location?->name,
+            default    => null,
+        };
+    }
+
     public function toArray(Request $request): array
     {
         return [
@@ -74,7 +90,10 @@ class ProjectDetailResource extends JsonResource
                     fn () => $this->contentBlocks
                         ->where('group', ContentBlock::GROUP_PROJECT_SPEC)
                         ->where('status', 'published')
-                        ->map(fn ($b) => ['label' => $b->title, 'value' => $b->value])
+                        ->map(fn ($b) => [
+                            'label' => $b->title,
+                            'value' => $this->autoValue($b->title) ?? $b->value,
+                        ])
                         ->values(),
                     []
                 ),

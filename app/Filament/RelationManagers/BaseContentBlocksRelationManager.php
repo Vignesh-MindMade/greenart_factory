@@ -3,6 +3,7 @@
 namespace App\Filament\RelationManagers;
 
 use App\Models\ContentBlock;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -36,6 +37,30 @@ abstract class BaseContentBlocksRelationManager extends RelationManager
      */
     protected static ?string $group = null;
 
+    /**
+     * Row labels whose value is derived from the parent record rather than
+     * typed. Kept in step with the matching resource's auto-fill logic.
+     *
+     * @var array<int, string>
+     */
+    protected static array $autoFilledLabels = [];
+
+    protected static function isAutoFilled(?string $title): bool
+    {
+        $title = mb_strtolower(trim((string) $title));
+
+        return $title !== '' && in_array(
+            $title,
+            array_map(mb_strtolower(...), static::$autoFilledLabels),
+            true,
+        );
+    }
+
+    protected static function valueHelperText(): string
+    {
+        return 'Only used by stat-style lists. Leave blank otherwise.';
+    }
+
 
     public function form(Schema $schema): Schema
     {
@@ -68,6 +93,10 @@ abstract class BaseContentBlocksRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->placeholder('Exceptional Craftsmanship')
+                    ->live(onBlur: true)   // so the value field can react to it
+                    ->helperText(static::$autoFilledLabels
+                        ? 'These labels fill their own value: ' . implode(', ', static::$autoFilledLabels) . '.'
+                        : null)
                     ->columnSpanFull(),
 
                 Textarea::make('description')
@@ -78,10 +107,16 @@ abstract class BaseContentBlocksRelationManager extends RelationManager
                 Grid::make(2)
                     ->schema([
                         TextInput::make('value')
-                            ->label('Headline figure')
+                            ->label('Value')
                             ->maxLength(255)
                             ->placeholder('98%')
-                            ->helperText('Only used by stat-style lists. Leave blank otherwise.'),
+                            // Reserved labels are filled from the record itself,
+                            // so anything typed here would be ignored.
+                            ->disabled(fn (Get $get): bool => static::isAutoFilled($get('title')))
+                            ->dehydrated(fn (Get $get): bool => ! static::isAutoFilled($get('title')))
+                            ->helperText(fn (Get $get): string => static::isAutoFilled($get('title'))
+                                ? 'Filled automatically from the record — nothing to enter.'
+                                : static::valueHelperText()),
                         Select::make('status')
                             ->required()
                             ->default('draft')

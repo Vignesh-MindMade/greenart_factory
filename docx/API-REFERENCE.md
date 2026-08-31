@@ -490,8 +490,8 @@ The project detail screen — Figma node `640:2214`.
             "slug": "interior-projects"
         },
         "location": {
-            "name": "Abudhabi",
-            "slug": "abudhabi",
+            "name": "Dubai",
+            "slug": "dubai",
             "country": "AE"
         },
         "sectors": [
@@ -522,8 +522,8 @@ The project detail screen — Figma node `640:2214`.
         ],
         "content": {
             "execution": "<p>The project involved the installation of five bespoke artificial Olive trees at the head office lobby of Zahid Group in KSA, each standin… (truncated for docs)",
-            "key_stages": "<ul><li>Trunk Selection &amp; Treatment – Handpicked mature trunks treated to ensure durability and lifelike appearance.</li><li>Design Ap… (truncated for docs)",
-            "key_highlights": "<ul><li>Bespoke Artificial Olive Trees – Five trees, each 4m tall with mature, realistic trunks.</li><li>Trunk Craftsmanship – Carefully… (truncated for docs)",
+            "key_stages": "<ul><li><p>Trunk Selection &amp; Treatment – Handpicked mature trunks treated to ensure durability and lifelike appearance.</p></li><li><p… (truncated for docs)",
+            "key_highlights": "<ul><li><p>Bespoke Artificial Olive Trees – Five trees, each 4m tall with mature, realistic trunks.</p></li><li><p>Trunk Craftsmanship –… (truncated for docs)",
             "challenge": "<p>This project posed several challenges, including selecting mature, realistic trunks that maintained authenticity and proper scale within … (truncated for docs)",
             "solution": "<p>To address the project challenges, carefully selected and treated trunks were used to ensure both durability and realistic appearance. Cl… (truncated for docs)"
         },
@@ -538,7 +538,7 @@ The project detail screen — Figma node `640:2214`.
                 },
                 {
                     "label": "Location",
-                    "value": "Abu Dhabi"
+                    "value": "Dubai"
                 },
                 {
                     "label": "System",
@@ -600,6 +600,7 @@ The project detail screen — Figma node `640:2214`.
 | `content.challenge` / `content.solution` | **Stored as two fields** per BRD FR-2.3, but the design renders them as one "our challenge & solution" block — concatenate them. |
 | `spec_card` | The dark card beside the challenge & solution block. `eyebrow`, `headline` and `body` may each be `null`; `rows` may be `[]`. Hide the card when everything is empty. |
 | `spec_card.rows[]` | Label/value pairs — Area, Location, System, Install Year, Client, and so on. Ordered and published-only. Row labels are free text per project, so render them generically rather than mapping to fixed keys. |
+| `spec_card.rows[]` — **Location** | Derived from the project's own location record, not typed by an editor, so it can never disagree with `location.name` in the same payload. Treat it as read-only. |
 | `gallery[]` | The PROJECT GALLERY grid. May be `[]`. |
 | `collections[]` | Collections this project is tagged to, via product variants. Carries both `product_url` and `gallery_url`. |
 | `related[]` | Up to 5 projects, same category first, then most recent. Same shape as a listing card. |

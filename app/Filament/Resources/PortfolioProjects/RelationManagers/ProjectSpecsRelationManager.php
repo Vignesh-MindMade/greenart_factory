@@ -17,4 +17,15 @@ class ProjectSpecsRelationManager extends BaseContentBlocksRelationManager
     protected static ?string $title = 'Specification rows';
 
     protected static ?string $group = ContentBlock::GROUP_PROJECT_SPEC;
+
+    /**
+     * Location already exists on the project as a foreign key, so its value is
+     * derived. Must stay in step with ProjectDetailResource::autoValue().
+     */
+    protected static array $autoFilledLabels = ['Location'];
+
+    protected static function valueHelperText(): string
+    {
+        return 'The value shown on the card, e.g. "60 m²".';
+    }
 }
