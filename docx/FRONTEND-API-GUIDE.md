@@ -20,7 +20,7 @@ backend is ready.
 | product detail | `545:571` | `/products/[slug]` | `GET /api/v1/products/[slug]` | ✅ Ready |
 | portfolio(project) | `545:1216` | `/portfolio` | `GET /api/v1/pages/portfolio` | ✅ Ready |
 | project detail | `640:2214` | `/portfolio/[slug]` | `GET /api/v1/projects/[slug]` | ✅ Ready |
-| our gallery | `644:2644` | `/gallery/[slug]` | `GET /api/v1/pages/gallery/[slug]` | ✅ Ready |
+| our gallery | `644:2644` | `/gallery/[slug]` · `/gallery/[slug]/[child]` | `GET /api/v1/pages/gallery/[slug]/[child?]` | ✅ Ready |
 | HOME | `154:2829` | `/` | 7 × `GET /api/homepage/*` | ⚠️ Legacy — see §6 |
 | BLOG | `306:599` | `/blog` | `GET /api/blog` | ⚠️ Legacy |
 | BLOG DETAIL | `333:1531` | `/blog/[slug]` | `GET /api/blog/[slug]` | ⚠️ Legacy, missing fields |
@@ -141,6 +141,7 @@ export const ProductSummary = z.object({
   slug: z.string(),
   description: z.string().nullable(),
   cover_image: z.string().nullable(),
+  images: z.array(z.string()),   // cover first, then product_gallery — see note below
   cta_url: z.string(),
   variants: z.array(z.object({
     id: z.number(),
@@ -158,6 +159,7 @@ export const ProjectSummary = z.object({
   slug: z.string(),
   excerpt: z.string().nullable(),
   cover_image: z.string().nullable(),
+  gallery: z.array(z.object({ url: z.string(), alt: z.string() })),   // cover first, then project_images — see note below
   category: z.object({ name: z.string().nullable(), slug: z.string().nullable() }).nullable().optional(),
   location: z.object({
     name: z.string(),
@@ -168,6 +170,14 @@ export const ProjectSummary = z.object({
   meta_line: z.string().nullable(),   // "Commercial · Dubai · AE" — pre-joined
   cta_url: z.string(),
 });
+
+> **Rotating card images.** `ProductSummary.images` and `ProjectSummary.gallery`
+> always contain at least one entry (the cover image) when the item has any
+> image at all, and are `[]` only when it has none — so no fallback to
+> `cover_image` is needed. To show a different image per card on each page
+> load/refresh, pick an entry from the array (e.g. at random, or by page-load
+> index) instead of always rendering index 0. `cover_image` is left in place
+> unchanged for anywhere that needs one fixed image (og:image, etc).
 
 export const Pagination = z.object({
   current_page: z.number(),
@@ -233,8 +243,9 @@ const ProductDetail = z.object({
       image: z.string().nullable(),
       images: z.array(z.string()),
       spec: Spec,
-      project_url: z.string().nullable(),
-      gallery_url: z.string(),
+      project_url: z.string().nullable(),   // /portfolio?product=…&product_variant=… — a filtered listing
+      project_count: z.number(),            // 0 exactly when project_url is null
+      gallery_url: z.string(),              // /gallery/[product]/[variant]
     })),
     varieties_section: z.object({
       title: z.string().nullable(),
@@ -247,7 +258,7 @@ const ProductDetail = z.object({
         slug: z.string(),
         description: z.string().nullable(),
         image: z.string().nullable(),
-        gallery_url: z.string(),
+        gallery_url: z.string(),            // /gallery/[product]/[variety]
       })),
     }),
     related: z.array(ProductSummary),
@@ -268,15 +279,23 @@ export const getProduct = (slug: string) =>
 | "Choose Your Texture & Feel" + the 4 variety tiles | `varieties_section` |
 | Related Products rail | `related[]` |
 
-**Three things to handle:**
+**Things to handle:**
 
-- `project_url` is `null` on most variants — **hide the View project button** rather
-  than rendering a dead link.
+- `project_url` is **not** a project page. It is `/portfolio` pre-filtered to that
+  variant — `?product=moss-creations&product_variant=moss-walls` — so the visitor
+  lands on every project linked to it, not on whichever one was edited last. A
+  project tagged to several collections shows up under each of them. `project_count`
+  tells you how many will come back.
+- `project_url` is still `null` when nothing is linked — **hide the View project
+  button** rather than rendering a link to an empty result set.
 - `display_no` repeats (`01, 01, 01, 02, 02`). It is a design label, not a sequence.
   Render the string; never derive it from the array index.
 - `varieties_section.items` is `[]` for most products — hide the whole section.
-- Variant `cta_url` is always `null`. There is no variant-level screen in the
-  design, so variant cards are not links.
+- Variant `cta_url` (on the *summary* card, products listing) is always `null`.
+  There is no variant-level product screen in the design, so variant cards on the
+  listing are not links — the detail page's `gallery_url` is a different field.
+- `gallery_url` on both variants and varieties is now **per sub-product**
+  (`/gallery/[product]/[variant]`), not one shared collection URL.
 
 ---
 
@@ -293,6 +312,7 @@ const PortfolioPage = z.object({
       installation_types: z.array(Option),
       locations: z.array(Option.extend({ country: z.string().nullable() })),
       sectors: z.array(Option),
+      products: z.array(Option.extend({ variants: z.array(Option) })),
     }),
     projects: z.array(ProjectSummary),
   }),
@@ -316,7 +336,14 @@ and **do not use `/api/filters`**, which is unversioned and includes unpublished
 records.
 
 Filter params (all optional, all slugs): `search`, `category`, `sector`,
-`installation_type`, `location`, `product_variant`, `page`, `per_page`.
+`installation_type`, `location`, `product`, `product_variant`, `page`, `per_page`.
+
+`product` matches any variant of a collection, `product_variant` one specific
+variant; sent together they must hold on the same link (variant slugs are unique
+only within their product). This is the pair a product page's **View project**
+CTA sends. Label the applied chip from `filters.products` — it carries every
+published collection with its variants, so you can turn `moss-walls` into
+"Moss Walls" without another request.
 
 > `category` is the filter the design labels **Project Type**.
 
@@ -403,9 +430,15 @@ export const getProject = (slug: string) =>
 
 ---
 
-### `/gallery/[slug]` — Figma `644:2644`
+### `/gallery/[slug]` and `/gallery/[slug]/[child]` — Figma `644:2644`
 
-`slug` is a **product** slug. One design serves every collection.
+`slug` is a **product** slug; the optional `child` segment is a variant or
+variety slug. One design serves all of them — build it once as
+`app/gallery/[slug]/[[...child]]/page.tsx` and pass both segments through.
+
+Every sub-product has its own gallery page: the "view gallery" CTAs on a product
+detail page point at `/gallery/moss-creations/moss-walls`, not at the shared
+collection URL.
 
 ```ts
 const GalleryPage = z.object({
@@ -418,11 +451,24 @@ const GalleryPage = z.object({
       description: z.string().nullable(),
       hero_image: z.string().nullable(),
       product_url: z.string(),
+      gallery_url: z.string(),          // back to the collection gallery
     }),
+    // null on a collection gallery; present on a sub-product one.
+    scope: z.object({
+      type: z.enum(['variant', 'variety']),
+      id: z.number(),
+      name: z.string(),
+      slug: z.string(),
+      description: z.string().nullable(),
+      hero_image: z.string().nullable(),
+      product_url: z.string(),
+      projects_url: z.string(),
+      breadcrumb: z.array(z.object({ label: z.string(), url: z.string().nullable() })),
+    }).nullable(),
     images: z.array(z.object({
       url: z.string(),
       alt: z.string(),
-      source: z.enum(['project', 'product']),
+      source: z.enum(['variant', 'variety', 'project', 'product']),
       project: z.object({
         id: z.number(),
         title: z.string(),
@@ -432,6 +478,7 @@ const GalleryPage = z.object({
     })),
     related: z.array(z.object({
       id: z.number(),
+      type: z.enum(['collection', 'variant', 'variety']),
       name: z.string(),
       slug: z.string(),
       cover_image: z.string().nullable(),
@@ -441,20 +488,33 @@ const GalleryPage = z.object({
   meta: z.object({ total_images: z.number() }),
 });
 
-export const getGallery = (slug: string) =>
-  apiGet(`/v1/pages/gallery/${slug}`, GalleryPage);
+export const getGallery = (slug: string, child?: string) =>
+  apiGet(`/v1/pages/gallery/${slug}${child ? `/${child}` : ''}`, GalleryPage);
 ```
 
 | Renders | From |
 |---|---|
-| Hero banner | `collection.hero_image` |
+| Page title and copy | `scope ?? collection` — the sub-product when scoped, else the collection |
+| Hero banner | `scope?.hero_image ?? collection.hero_image` |
+| Breadcrumb | `scope?.breadcrumb` (absent on a collection page) |
 | The image grid | `images[]` |
-| "Related Images" rail — other collections | `related[]` |
+| "Related Images" rail | `related[]` — other collections, or the sibling sub-products when scoped |
 
-`images[].source` tells you where a tile came from: `project` means it was pulled
-from a linked case study, and `project` carries the link back to it. `product`
-means it was uploaded straight onto the collection. Use it to decide whether a
-tile is clickable.
+```tsx
+const { collection, scope, images, related } = data;
+const subject = scope ?? collection;   // one component, both URL forms
+```
+
+`images[].source` tells you where a tile came from: `variant`/`variety` is the
+sub-product's own upload, `project` was pulled from a linked case study and
+carries the link back to it, `product` was uploaded straight onto the collection.
+Use it to decide whether a tile is clickable.
+
+A variant gallery is its own images + the projects linked to that one variant +
+the collection's standalone uploads. A variety gallery has no project source —
+varieties are textures of the collection, not separately installable — so it is
+its own image + those standalone uploads. `scope.projects_url` is the same
+filtered `/portfolio` link the product page's View project CTA uses.
 
 `images` may be `[]` — render an empty state. There is **no paging** on this
 endpoint; a collection linked to many projects returns one large array.
@@ -494,8 +554,12 @@ export default async function ProductPage(
           )}
           {variant.spec.tags.map((tag) => <span key={tag}>{tag}</span>)}
 
-          {/* null on most variants — no link rather than a dead one */}
-          {variant.project_url && <a href={variant.project_url}>View project</a>}
+          {/* null when nothing is linked — no link rather than an empty listing */}
+          {variant.project_url && (
+            <a href={variant.project_url}>
+              View project{variant.project_count > 1 ? `s (${variant.project_count})` : ''}
+            </a>
+          )}
           <a href={variant.gallery_url}>view gallery</a>
         </section>
       ))}

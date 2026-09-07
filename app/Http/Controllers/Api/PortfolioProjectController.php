@@ -10,6 +10,7 @@ use App\Models\Location;
 use App\Models\PageSection;
 use App\Models\PortfolioCategory;
 use App\Models\PortfolioProject;
+use App\Models\Product;
 use App\Models\Sector;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -58,6 +59,10 @@ class PortfolioProjectController extends Controller
                     'locations'          => Location::orderBy('name')->get(['name', 'slug', 'country'])
                         ->map(fn ($l) => ['name' => $l->name, 'slug' => $l->slug, 'country' => $l->country]),
                     'sectors'            => $this->filterOptions(Sector::class),
+                    // Collections and their sub-products, so the bar can label
+                    // a ?product= / ?product_variant= filter arriving from a
+                    // product page's "View project" CTA.
+                    'products'           => $this->productFilterOptions(),
                 ],
                 'projects' => $result['data'],
             ],
@@ -161,11 +166,50 @@ class PortfolioProjectController extends Controller
         $this->applySlugFilter($query, $request, 'category', 'category');
         $this->applySlugFilter($query, $request, 'sector', 'sectors');
         $this->applySlugFilter($query, $request, 'installation_type', 'installationTypes');
-        $this->applySlugFilter($query, $request, 'product_variant', 'productVariants');
+
+        // `product` matches any variant of that collection, `product_variant`
+        // one specific variant. Applied as a single constraint so the two
+        // must hold on the *same* variant — variant slugs are unique only
+        // within their product. A project tagged to several collections still
+        // matches: whereHas asks whether any link qualifies, not all of them.
+        if ($request->filled('product') || $request->filled('product_variant')) {
+            $query->whereHas('productVariants', function (Builder $variants) use ($request) {
+                if ($request->filled('product_variant')) {
+                    $variants->where('product_variants.slug', $request->string('product_variant'));
+                }
+
+                if ($request->filled('product')) {
+                    $variants->whereHas(
+                        'product',
+                        fn (Builder $product) => $product->where('slug', $request->string('product'))
+                    );
+                }
+            });
+        }
 
         if ($request->filled('location')) {
             $query->whereHas('location', fn ($q) => $q->where('slug', $request->string('location')));
         }
+    }
+
+    /**
+     * Published collections with their published variants — the option list
+     * behind the product filter.
+     */
+    private function productFilterOptions(): \Illuminate\Support\Collection
+    {
+        return Product::query()
+            ->where('status', 'published')
+            ->with(['variants' => fn ($q) => $q->where('status', 'published')])
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug'])
+            ->map(fn (Product $product) => [
+                'name'     => $product->name,
+                'slug'     => $product->slug,
+                'variants' => $product->variants
+                    ->map(fn ($variant) => ['name' => $variant->name, 'slug' => $variant->slug])
+                    ->values(),
+            ]);
     }
 
     private function buildIndex(Request $request): array

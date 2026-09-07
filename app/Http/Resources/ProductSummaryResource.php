@@ -17,12 +17,24 @@ class ProductSummaryResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $cover = $this->getFirstMediaUrl('cover_image') ?: null;
+
+        // Cover first, then the gallery — always at least [cover] when only a
+        // cover is set, so the frontend never has to special-case an empty
+        // array against a separate cover_image field when rotating cards.
+        $images = collect([$cover])
+            ->merge($this->getMedia('product_gallery')->map(fn ($media) => $media->getUrl()))
+            ->filter()
+            ->unique()
+            ->values();
+
         return [
             'id'          => $this->id,
             'name'        => $this->name,
             'slug'        => $this->slug,
             'description' => $this->description,
-            'cover_image' => $this->getFirstMediaUrl('cover_image') ?: null,
+            'cover_image' => $cover,
+            'images'      => $images,
             'cta_url'     => '/products/' . $this->slug,
 
             // Only present when the caller eager-loaded variants.

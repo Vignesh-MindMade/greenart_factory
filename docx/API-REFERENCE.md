@@ -83,6 +83,7 @@ The products listing screen. One request renders the whole page.
                 "slug": "bark-panels",
                 "description": null,
                 "cover_image": null,
+                "images": [],
                 "cta_url": "/products/bark-panels",
                 "variants": [
                     {
@@ -128,6 +129,10 @@ The products listing screen. One request renders the whole page.
 
 - `section` is editable copy from the admin dashboard. Any field may be `null` —
   render conditionally.
+- `products[].images` is cover image first, then the product's gallery
+  uploads, deduplicated — `[]` only when the product has no image at all.
+  Use it (instead of always `images[0]`) to show a different card image on
+  each page load/refresh, e.g. by picking a random index.
 - `products[].variants` are summary cards only. Full variant blocks live on the
   detail endpoint.
 - `products[].variants[].cta_url` is **always `null` today.** There is no
@@ -185,6 +190,7 @@ Entity list. Use for search and pagination, not for rendering the products page.
             "slug": "bark-panels",
             "description": null,
             "cover_image": null,
+            "images": [],
             "cta_url": "/products/bark-panels",
             "variants": [
                 {
@@ -252,8 +258,9 @@ The product detail screen — Figma node `545:571`.
                         "No Water"
                     ]
                 },
-                "project_url": "/portfolio/corporate-elegance",
-                "gallery_url": "/gallery?product=moss-creations&variant=moss-walls"
+                "project_url": "/portfolio?product=moss-creations&product_variant=moss-walls",
+                "project_count": 1,
+                "gallery_url": "/gallery/moss-creations/moss-walls"
             },
             {
                 "id": 8,
@@ -275,7 +282,8 @@ The product detail screen — Figma node `545:571`.
                     ]
                 },
                 "project_url": null,
-                "gallery_url": "/gallery?product=moss-creations&variant=moss-world-maps"
+                "project_count": 0,
+                "gallery_url": "/gallery/moss-creations/moss-world-maps"
             }
         ],
         "varieties_section": {
@@ -290,7 +298,7 @@ The product detail screen — Figma node `545:571`.
                     "slug": "flat-moss",
                     "description": "A dense, velvety carpet moss offering smooth, uniform coverage. Ideal for large backgrounds and minimalist compositions that demand quiet elegance.",
                     "image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/77/Rectangle.png.png",
-                    "gallery_url": "/gallery?product=moss-creations&variety=flat-moss"
+                    "gallery_url": "/gallery/moss-creations/flat-moss"
                 },
                 {
                     "id": 2,
@@ -299,7 +307,7 @@ The product detail screen — Figma node `545:571`.
                     "slug": "reindeer-moss",
                     "description": "A sculptural lichen with intricate branching forms. Available in a spectrum of hues from natural sage to charcoal, perfect for artistic wall compositions.",
                     "image": null,
-                    "gallery_url": "/gallery?product=moss-creations&variety=reindeer-moss"
+                    "gallery_url": "/gallery/moss-creations/reindeer-moss"
                 }
             ]
         },
@@ -310,6 +318,7 @@ The product detail screen — Figma node `545:571`.
                 "slug": "bark-panels",
                 "description": null,
                 "cover_image": null,
+                "images": [],
                 "cta_url": "/products/bark-panels"
             },
             {
@@ -318,6 +327,7 @@ The product detail screen — Figma node `545:571`.
                 "slug": "bespoke-artificial-trees",
                 "description": null,
                 "cover_image": null,
+                "images": [],
                 "cta_url": "/products/bespoke-artificial-trees"
             }
         ]
@@ -334,10 +344,12 @@ The product detail screen — Figma node `545:571`.
 | `variants[].image` | First image, used as the block image. |
 | `variants[].images` | Full set including `image`. Feeds the block gallery. |
 | `variants[].spec` | The small card. `label`/`value` may be `null`; `tags` is always an array, possibly empty. |
-| `variants[].project_url` | `null` when no published project is linked — **hide the "View project" CTA in that case.** Most variants are `null` today. |
-| `variants[].gallery_url` | This collection's gallery page. The gallery is per collection, so every variant and variety of a product shares one URL. |
+| `variants[].project_url` | The portfolio listing **pre-filtered to this variant**, not a single project — every linked project is reachable, including ones tagged to several other collections as well. Carries `product` too so the filter bar can label the chip with the collection name. `null` when no published project is linked — **hide the "View project" CTA in that case.** |
+| `variants[].project_count` | How many published projects the filtered listing will return. `0` exactly when `project_url` is `null`; use it for "View project (2)" if the design wants a count. |
+| `variants[].gallery_url` | **This variant's own gallery page** — `/gallery/{product}/{variant}`. Every sub-product has its own gallery; they no longer share the collection's URL. |
 | `varieties_section` | The "Choose Your Texture & Feel" grid. `title`/`intro`/`footer` are editable and may be `null`. |
 | `varieties_section.items` | May be `[]` — most products have no varieties. Hide the whole section when empty. |
+| `varieties_section.items[].gallery_url` | That variety's own gallery page — `/gallery/{product}/{variety}`, the same route shape variants use. |
 | `related` | Up to 5 other published products, alphabetical. Excludes the current product. |
 
 ---
@@ -356,7 +368,8 @@ of results — one request, no second call to populate the filter bar.
 | `search` | Partial match on project title |
 | `category` | Slug. The design labels this filter **Project Type** |
 | `sector` · `installation_type` · `location` | Slug |
-| `product_variant` | Slug — projects tagged to a given variant |
+| `product` | Product slug — projects tagged to **any** variant of that collection |
+| `product_variant` | Variant slug — projects tagged to that one variant. Combine with `product` (as `project_url` on the product page does): both must hold on the same link, since variant slugs are unique only within their product |
 | `page` · `per_page` | Default 12, capped at 48 |
 
 **Response**
@@ -413,6 +426,22 @@ of results — one request, no second call to populate the filter bar.
                     "name": "Commercial",
                     "slug": "commercial"
                 }
+            ],
+            "products": [
+                {
+                    "name": "Moss Creations",
+                    "slug": "moss-creations",
+                    "variants": [
+                        {
+                            "name": "Moss Walls",
+                            "slug": "moss-walls"
+                        },
+                        {
+                            "name": "Moss World Maps",
+                            "slug": "moss-world-maps"
+                        }
+                    ]
+                }
             ]
         },
         "projects": [
@@ -422,6 +451,12 @@ of results — one request, no second call to populate the filter bar.
                 "slug": "skyline-rooftop-garden",
                 "excerpt": null,
                 "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/70/projects5.jpg.jpg",
+                "gallery": [
+                    {
+                        "url": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/70/projects5.jpg.jpg",
+                        "alt": "Skyline Rooftop Garden"
+                    }
+                ],
                 "category": {
                     "name": "Exterior Projects",
                     "slug": "exterior-projects"
@@ -455,7 +490,16 @@ of results — one request, no second call to populate the filter bar.
 
 - `filters` holds the dropdown options. Render the bar from this, not from
   `/api/filters` (which is unversioned and leaks unpublished records).
+- `filters.products` is the option list behind the `product` / `product_variant`
+  parameters, published collections with their published variants. It is what
+  turns an arriving `?product=moss-creations&product_variant=moss-walls` — the
+  URL a product page's "View project" CTA links to — into a named filter chip
+  without a second request.
 - `meta.total` drives the "Total projects (N)" counter.
+- `projects[].gallery` is cover image first, then `project_images`,
+  deduplicated by URL — `[]` only when the project has no image at all. Use
+  it (instead of always `gallery[0]`) to show a different card image on each
+  page load/refresh, e.g. by picking a random index.
 - `projects[].meta_line` is pre-joined server-side — "Commercial · Dubai · AE".
   Which parts exist varies per project, so the conditional logic lives in the
   backend. Render it as-is.
@@ -568,6 +612,12 @@ The project detail screen — Figma node `640:2214`.
                 "slug": "serenity-greens",
                 "excerpt": null,
                 "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/68/projects1.jpg.jpg",
+                "gallery": [
+                    {
+                        "url": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/68/projects1.jpg.jpg",
+                        "alt": "Serenity Greens"
+                    }
+                ],
                 "category": {
                     "name": "Interior Projects",
                     "slug": "interior-projects"
@@ -613,16 +663,27 @@ The project detail screen — Figma node `640:2214`.
 
 ## Gallery
 
-### `GET /api/v1/pages/gallery/{slug}`
+### `GET /api/v1/pages/gallery/{slug}` · `GET /api/v1/pages/gallery/{slug}/{child}`
 
-One collection's gallery page. **The same screen serves every collection** —
-`slug` is a product slug, e.g. `/api/v1/pages/gallery/bespoke-artificial-trees`.
+A gallery page. **The same screen serves every one of them.**
+
+| URL | Shows |
+|---|---|
+| `/api/v1/pages/gallery/moss-creations` | The whole collection |
+| `/api/v1/pages/gallery/moss-creations/moss-walls` | One sub-product — a variant… |
+| `/api/v1/pages/gallery/moss-creations/flat-moss` | …or a variety |
+
+**Every sub-product has its own gallery page.** The "view gallery" CTAs on the
+product detail page point at the two-segment form, so each variant and variety
+lands on its own page rather than all of them sharing the collection's.
 
 This is BRD section 6 in practice: images are **gathered at read time, never
 copied**. An image uploaded once against a project appears on the gallery of
 every collection that project is tagged to, and is still stored exactly once.
 
-**Parameters** — `slug` in path.
+**Parameters** — `slug` (product) in path, `child` (variant or variety slug)
+optional. `child` is resolved against the product's published variants first,
+then its published varieties; an unknown one 404s.
 
 **Response**
 
@@ -639,8 +700,10 @@ every collection that project is tagged to, and is still stored exactly once.
             "slug": "bespoke-artificial-trees",
             "description": null,
             "hero_image": null,
-            "product_url": "/products/bespoke-artificial-trees"
+            "product_url": "/products/bespoke-artificial-trees",
+            "gallery_url": "/gallery/bespoke-artificial-trees"
         },
+        "scope": null,
         "images": [
             {
                 "url": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/69/projects2.jpg.jpg",
@@ -668,6 +731,7 @@ every collection that project is tagged to, and is still stored exactly once.
         "related": [
             {
                 "id": 8,
+                "type": "collection",
                 "name": "Bark Panels",
                 "slug": "bark-panels",
                 "cover_image": null,
@@ -675,6 +739,7 @@ every collection that project is tagged to, and is still stored exactly once.
             },
             {
                 "id": 4,
+                "type": "collection",
                 "name": "Biophilic Designs & Indoor Landscapes",
                 "slug": "biophilic-designs-indoor-landscapes",
                 "cover_image": null,
@@ -688,15 +753,93 @@ every collection that project is tagged to, and is still stored exactly once.
 }
 ```
 
+**Sub-product gallery** — the same body with `scope` filled in:
+
+```json
+{
+    "data": {
+        "section": { "title": "gallery", "subtitle": "view our gallery" },
+        "collection": {
+            "id": 1,
+            "name": "Moss Creations",
+            "slug": "moss-creations",
+            "description": "Create captivating interiors with our bespoke Moss Creations…",
+            "hero_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/78/Rectangle.png.png",
+            "product_url": "/products/moss-creations",
+            "gallery_url": "/gallery/moss-creations"
+        },
+        "scope": {
+            "type": "variant",
+            "id": 1,
+            "name": "Moss Walls",
+            "slug": "moss-walls",
+            "description": "Each installation is custom-designed to complement the architecture…",
+            "hero_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/22/Moss-wall-for-events.webp.webp",
+            "product_url": "/products/moss-creations",
+            "projects_url": "/portfolio?product=moss-creations&product_variant=moss-walls",
+            "breadcrumb": [
+                { "label": "Home", "url": "/" },
+                { "label": "Moss Creations", "url": "/gallery/moss-creations" },
+                { "label": "Moss Walls", "url": null }
+            ]
+        },
+        "images": [
+            {
+                "url": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/22/Moss-wall-for-events.webp.webp",
+                "alt": "Moss-wall-for-events",
+                "source": "variant",
+                "project": null
+            },
+            {
+                "url": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/69/projects2.jpg.jpg",
+                "alt": "projects2",
+                "source": "project",
+                "project": {
+                    "id": 2,
+                    "title": "Corporate Elegance",
+                    "slug": "corporate-elegance",
+                    "url": "/portfolio/corporate-elegance"
+                }
+            }
+        ],
+        "related": [
+            {
+                "id": 8,
+                "type": "variant",
+                "name": "Moss World Maps",
+                "slug": "moss-world-maps",
+                "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/31/map-world-grass-background-3d-rendering-(1).jpg.jpg",
+                "gallery_url": "/gallery/moss-creations/moss-world-maps"
+            },
+            {
+                "id": 1,
+                "type": "variety",
+                "name": "Flat Moss",
+                "slug": "flat-moss",
+                "cover_image": "https://res.cloudinary.com/dzcfhoulx/image/upload/f_auto,q_auto/gaf/77/Rectangle.png.png",
+                "gallery_url": "/gallery/moss-creations/flat-moss"
+            }
+        ]
+    },
+    "meta": {
+        "total_images": 3
+    }
+}
+```
+
 **Field notes**
 
 | Field | Notes |
 |---|---|
 | `section` | Shared copy for all gallery pages — same design, one copy set. |
+| `collection` | Always the parent collection, on both URL forms. On a sub-product page use it for the "back to the collection" link (`gallery_url`). |
 | `collection.hero_image` | Dedicated banner if uploaded, otherwise falls back to the collection cover. `null` only when neither exists. |
-| `images[].source` | `project` — pulled from a linked portfolio project. `product` — uploaded directly against the collection. |
+| `scope` | `null` on a collection gallery. On a sub-product gallery it carries the title, copy, hero and breadcrumb the page should render **instead of** the collection's. |
+| `scope.type` | `variant` or `variety`. The page renders identically either way; the field is there for analytics and copy. |
+| `scope.projects_url` | The portfolio listing filtered to this sub-product — the same URL the product page's "View project" CTA uses. |
+| `images[].source` | `variant` / `variety` — the sub-product's own uploads. `project` — pulled from a linked portfolio project. `product` — uploaded directly against the collection. |
 | `images[].project` | Present only when `source` is `project`; use it to link the tile back to the case study. `null` otherwise. |
-| `related[]` | Sibling collections. Carries `gallery_url`, not `cta_url` — these link to other galleries, not product pages. |
+| `related[]` | Sibling galleries, up to 5, each with `gallery_url` and a `type`. On a collection page these are other **collections**; on a sub-product page they are the other **sub-products of the same collection**, so the rail keeps the visitor inside it. |
 | `meta.total_images` | Count before any client-side paging. There is no server-side paging on this endpoint. |
 
 **Behaviour the frontend can rely on**
@@ -707,6 +850,14 @@ every collection that project is tagged to, and is still stored exactly once.
   visible on the project's own page.
 - `images` may be `[]` when a collection has no linked published projects and
   no standalone uploads. Render an empty state.
+- A **variant** gallery is its own `variant_images`, then the images of the
+  published projects linked to that one variant, then the collection's
+  standalone uploads. A **variety** gallery is its own image then those same
+  standalone uploads — varieties are textures of the collection and carry no
+  project link of their own. Including the collection's uploads at every scope
+  is what stops a thinly-linked sub-product rendering a near-empty page.
+- URLs are deduplicated across those sources, so an image uploaded against both
+  a variant and its collection appears once.
 
 ---
 

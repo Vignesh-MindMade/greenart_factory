@@ -21,8 +21,9 @@ use App\Http\Controllers\Api\BlogController;
 Route::prefix('v1')->group(function () {
     // Page endpoints — one request per screen.
     Route::get('/pages/products', [ProductController::class, 'page']);
-    // One gallery page per collection; the same screen serves all of them.
-    Route::get('/pages/gallery/{slug}', [GalleryController::class, 'show']);
+    // One gallery page per collection, plus one per sub-product (variant or
+    // variety); the same screen serves all of them.
+    Route::get('/pages/gallery/{slug}/{child?}', [GalleryController::class, 'show']);
     Route::get('/pages/portfolio', [PortfolioProjectController::class, 'page']);
 
     Route::get('/projects', [PortfolioProjectController::class, 'index']);

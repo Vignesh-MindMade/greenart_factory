@@ -17,10 +17,12 @@ class ProductVariantResource extends JsonResource
             ->map(fn ($media) => $media->getUrl())
             ->values();
 
-        // First published linked project drives the "View project" CTA.
-        $project = $this->whenLoaded('portfolioProjects')
-            ? $this->portfolioProjects->first()
-            : null;
+        // The "View project" CTA opens the portfolio listing pre-filtered to
+        // this variant rather than jumping to one project, so every linked
+        // project is reachable — including projects that carry several other
+        // products alongside this one.
+        $hasProjects = $this->relationLoaded('portfolioProjects')
+            && $this->portfolioProjects->isNotEmpty();
 
         return [
             'id'          => $this->id,
@@ -39,9 +41,16 @@ class ProductVariantResource extends JsonResource
                 'tags'  => $this->spec_tags ?? [],
             ],
 
-            'project_url' => $project ? '/portfolio/' . $project->slug : null,
-            // The gallery is per collection — there is no variant-scoped view.
-            'gallery_url' => '/gallery/' . $this->product->slug,
+            // Carries the product too, so the listing can label the applied
+            // filter with the collection name. Null when nothing is linked —
+            // the CTA is hidden rather than opening an empty result set.
+            'project_url' => $hasProjects
+                ? '/portfolio?product=' . $this->product->slug . '&product_variant=' . $this->slug
+                : null,
+            'project_count' => $hasProjects ? $this->portfolioProjects->count() : 0,
+
+            // Every sub-product has its own gallery page.
+            'gallery_url' => '/gallery/' . $this->product->slug . '/' . $this->slug,
         ];
     }
 }

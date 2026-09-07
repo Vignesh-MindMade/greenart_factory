@@ -19,8 +19,8 @@ class ProductVarietyResource extends JsonResource
             'slug'        => $this->slug,
             'description' => $this->description,
             'image'       => $this->getFirstMediaUrl('variety_image') ?: null,
-            // The gallery is per collection — there is no variety-scoped view.
-            'gallery_url' => '/gallery/' . $this->product->slug,
+            // Every sub-product has its own gallery page.
+            'gallery_url' => '/gallery/' . $this->product->slug . '/' . $this->slug,
         ];
     }
 }

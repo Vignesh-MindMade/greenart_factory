@@ -23,12 +23,27 @@ class ProjectSummaryResource extends JsonResource
             $this->location?->country,
         ]);
 
+        $cover = $this->getFirstMediaUrl('cover_image') ?: null;
+
+        // Cover first, then the gallery, deduplicated by URL — always at
+        // least [cover] when only a cover is set, so the frontend never has
+        // to special-case an empty array against a separate cover_image
+        // field when rotating cards.
+        $gallery = collect($cover ? [['url' => $cover, 'alt' => $this->title]] : [])
+            ->merge($this->getMedia('project_images')->map(fn ($media) => [
+                'url' => $media->getUrl(),
+                'alt' => $media->name ?: $this->title,
+            ]))
+            ->unique('url')
+            ->values();
+
         return [
             'id'          => $this->id,
             'title'       => $this->title,
             'slug'        => $this->slug,
             'excerpt'     => $this->excerpt,
-            'cover_image' => $this->getFirstMediaUrl('cover_image') ?: null,
+            'cover_image' => $cover,
+            'gallery'     => $gallery,
 
             'category' => $this->whenLoaded('category', fn () => [
                 'name' => $this->category?->name,
