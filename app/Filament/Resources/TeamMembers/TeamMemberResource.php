@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TeamMembers;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\TeamMembers\Pages\CreateTeamMember;
 use App\Filament\Resources\TeamMembers\Pages\EditTeamMember;
 use App\Filament\Resources\TeamMembers\Pages\ListTeamMembers;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class TeamMemberResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = TeamMember::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CoreValues;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\CoreValues\Pages\CreateCoreValue;
 use App\Filament\Resources\CoreValues\Pages\EditCoreValue;
 use App\Filament\Resources\CoreValues\Pages\ListCoreValues;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class CoreValueResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = CoreValue::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';

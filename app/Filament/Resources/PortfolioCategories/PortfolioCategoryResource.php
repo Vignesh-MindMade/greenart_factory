@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PortfolioCategories;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\PortfolioCategories\Pages\CreatePortfolioCategory;
 use App\Filament\Resources\PortfolioCategories\Pages\EditPortfolioCategory;
 use App\Filament\Resources\PortfolioCategories\Pages\ListPortfolioCategories;
@@ -17,6 +18,10 @@ use Filament\Tables\Table;
 
 class PortfolioCategoryResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'project_management';
+
     protected static ?string $model = PortfolioCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

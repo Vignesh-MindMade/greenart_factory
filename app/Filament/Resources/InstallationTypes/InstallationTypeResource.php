@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InstallationTypes;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\InstallationTypes\Pages\CreateInstallationType;
 use App\Filament\Resources\InstallationTypes\Pages\EditInstallationType;
 use App\Filament\Resources\InstallationTypes\Pages\ListInstallationTypes;
@@ -17,6 +18,10 @@ use Filament\Tables\Table;
 
 class InstallationTypeResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'project_management';
+
     protected static ?string $model = InstallationType::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;

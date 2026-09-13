@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Services;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Filament\Resources\Services\Pages\EditService;
 use App\Filament\Resources\Services\Pages\ListServices;
@@ -19,6 +20,10 @@ use App\Filament\Resources\Services\RelationManagers\ServiceitemRelationManager;
 
 class ServiceResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
     protected static ?string $model = Service::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;

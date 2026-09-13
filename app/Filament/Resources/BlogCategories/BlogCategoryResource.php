@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BlogCategories;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\BlogCategories\Pages\CreateBlogCategory;
 use App\Filament\Resources\BlogCategories\Pages\EditBlogCategory;
 use App\Filament\Resources\BlogCategories\Pages\ListBlogCategories;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class BlogCategoryResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
     protected static string|UnitEnum|null $navigationGroup = 'Blogs';
     protected static ?int $navigationSort = 1;
 

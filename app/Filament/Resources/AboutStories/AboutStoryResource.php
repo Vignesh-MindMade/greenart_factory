@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AboutStories;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\AboutStories\Pages\CreateAboutStory;
 use App\Filament\Resources\AboutStories\Pages\EditAboutStory;
 use App\Filament\Resources\AboutStories\Pages\ListAboutStories;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class AboutStoryResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = AboutStory::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';

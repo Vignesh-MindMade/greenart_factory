@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PortfolioProjects;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\PortfolioProjects\Pages\CreatePortfolioProject;
 use App\Filament\Resources\PortfolioProjects\RelationManagers\ProjectSpecsRelationManager;
 use App\Filament\Resources\PortfolioProjects\Pages\EditPortfolioProject;
@@ -20,6 +21,10 @@ use Filament\Tables\Table;
 
 class PortfolioProjectResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'project_management';
+
     protected static ?string $model = PortfolioProject::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;

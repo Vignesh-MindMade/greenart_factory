@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PageSections;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\PageSections\Pages\ListAboutPageSections;
 use App\Filament\Resources\PageSections\Pages\EditAboutPageSection;
 use App\Models\PageSection;
@@ -21,6 +22,10 @@ use BackedEnum;
 // item-list resources; this only edits each block's intro heading text.
 class AboutSectionResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     private const SECTION_KEYS = [
         'about_story',
         'about_mission',
@@ -75,6 +80,7 @@ class AboutSectionResource extends Resource
 
     public static function canCreate(): bool { return false; }
     public static function canDelete($record): bool { return false; }
+    public static function canDeleteAny(): bool { return false; }
 
     public static function getRelations(): array { return []; }
 

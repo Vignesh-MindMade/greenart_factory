@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Testimonials;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Testimonials\Pages\CreateTestimonials;
 use App\Filament\Resources\Testimonials\Pages\EditTestimonials;
 use App\Filament\Resources\Testimonials\Pages\ListTestimonials;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class TestimonialsResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
         protected static string|UnitEnum|null $navigationGroup = 'Homepage';
       protected static ?int $navigationSort = 2;
     protected static ?string $model = Testimonials::class;

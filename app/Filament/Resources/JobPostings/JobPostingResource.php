@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\JobPostings;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\JobPostings\Pages\CreateJobPosting;
 use App\Filament\Resources\JobPostings\Pages\EditJobPosting;
 use App\Filament\Resources\JobPostings\Pages\ListJobPostings;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class JobPostingResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'careers_postings';
+
     protected static ?string $model = JobPosting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;

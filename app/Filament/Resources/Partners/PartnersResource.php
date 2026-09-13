@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Partners;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Partners\Pages\CreatePartners;
 use App\Filament\Resources\Partners\Pages\EditPartners;
 use App\Filament\Resources\Partners\Pages\ListPartners;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class PartnersResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
         protected static string|UnitEnum|null $navigationGroup = 'Homepage';
       protected static ?int $navigationSort = 3;
 

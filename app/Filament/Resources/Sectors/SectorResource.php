@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Sectors;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Sectors\Pages\CreateSector;
 use App\Filament\Resources\Sectors\Pages\EditSector;
 use App\Filament\Resources\Sectors\Pages\ListSectors;
@@ -17,6 +18,10 @@ use Filament\Tables\Table;
 
 class SectorResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'project_management';
+
     protected static ?string $model = Sector::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class ServiceItem extends Model implements HasMedia
 {
     //
-    use InteractsWithMedia;
+    use InteractsWithMedia, LogsActivity;
     protected $fillable = ['service_id', 'name', 'slug', 'sort_order'];
    public function registerMediaCollections(): void
     {

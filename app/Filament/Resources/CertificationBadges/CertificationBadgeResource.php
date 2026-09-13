@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CertificationBadges;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\CertificationBadges\Pages\CreateCertificationBadge;
 use App\Filament\Resources\CertificationBadges\Pages\EditCertificationBadge;
 use App\Filament\Resources\CertificationBadges\Pages\ListCertificationBadges;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class CertificationBadgeResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = CertificationBadge::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';

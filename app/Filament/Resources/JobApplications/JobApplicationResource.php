@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\JobApplications;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\JobApplications\Pages\EditJobApplication;
 use App\Filament\Resources\JobApplications\Pages\ListJobApplications;
 use App\Filament\Resources\JobApplications\Schemas\JobApplicationForm;
@@ -16,6 +17,10 @@ use UnitEnum;
 
 class JobApplicationResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'careers_applications';
+
     protected static ?string $model = JobApplication::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInbox;

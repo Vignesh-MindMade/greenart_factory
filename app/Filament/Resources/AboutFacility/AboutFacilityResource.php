@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AboutFacility;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\AboutFacility\Pages\EditAboutFacility;
 use App\Filament\Resources\AboutFacility\Pages\ListAboutFacility;
 use App\Models\PageSection;
@@ -20,6 +21,10 @@ use UnitEnum;
 
 class AboutFacilityResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = PageSection::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';
@@ -37,6 +42,7 @@ class AboutFacilityResource extends Resource
 
     public static function canCreate(): bool { return false; }
     public static function canDelete($record): bool { return false; }
+    public static function canDeleteAny(): bool { return false; }
 
     public static function form(Schema $schema): Schema
     {

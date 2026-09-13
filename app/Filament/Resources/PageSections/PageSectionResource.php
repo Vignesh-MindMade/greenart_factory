@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PageSections;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\PageSections\Pages\CreatePageSection;
 use App\Filament\Resources\PageSections\RelationManagers\ContentBlocksRelationManager;
 use App\Filament\Resources\PageSections\Pages\EditPageSection;
@@ -18,6 +19,10 @@ use UnitEnum;
 
 class PageSectionResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
       protected static string|UnitEnum|null $navigationGroup = 'Homepage';
       protected static ?int $navigationSort = 4;
     protected static ?string $model = PageSection::class;
@@ -47,6 +52,11 @@ class PageSectionResource extends Resource
     }
 
     public static function canDelete($record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
     {
         return false;
     }

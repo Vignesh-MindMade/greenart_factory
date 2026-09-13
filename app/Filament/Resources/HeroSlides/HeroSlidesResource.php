@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HeroSlides;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\HeroSlides\Pages\CreateHeroSlides;
 use App\Filament\Resources\HeroSlides\Pages\EditHeroSlides;
 use App\Filament\Resources\HeroSlides\Pages\ListHeroSlides;
@@ -18,6 +19,10 @@ use Filament\Navigation\NavigationGroup;
 
 class HeroSlidesResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'content_management';
+
     protected static string|UnitEnum|null $navigationGroup = 'Homepage';
       protected static ?int $navigationSort = 1;
     protected static ?string $model = HeroSlides::class;

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Certifications;
 
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Certifications\Pages\CreateCertification;
 use App\Filament\Resources\Certifications\Pages\EditCertification;
 use App\Filament\Resources\Certifications\Pages\ListCertifications;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class CertificationResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'about_us';
+
     protected static ?string $model = Certification::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'About';

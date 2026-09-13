@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Products;
 
 use UnitEnum;
+use App\Filament\Concerns\HasModuleAccess;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
@@ -19,6 +20,10 @@ use App\Filament\Resources\Products\RelationManagers\VarietiesRelationManager;
 
 class ProductResource extends Resource
 {
+    use HasModuleAccess;
+
+    public const MODULE = 'product_gallery';
+
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArchiveBox;
