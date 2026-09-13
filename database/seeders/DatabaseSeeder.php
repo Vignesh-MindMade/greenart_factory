@@ -9,6 +9,7 @@ use Database\Seeders\PageSectionSeeder;
 use Database\Seeders\CoreValueSeeder;
 use Database\Seeders\AboutStorySeeder;
 use Database\Seeders\TeamMemberSeeder;
+use Database\Seeders\JobPostingSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CoreValueSeeder::class);
         $this->call(AboutStorySeeder::class);
         $this->call(TeamMemberSeeder::class);
+        $this->call(JobPostingSeeder::class);
 
         User::factory()->create([
             'name' => 'Test User',

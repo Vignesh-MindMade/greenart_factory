@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\HomepageController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\AboutController;
+use App\Http\Controllers\Api\CareersController;
 
 
 /*
@@ -33,6 +34,12 @@ Route::prefix('v1')->group(function () {
     // Entity endpoints.
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
+
+    // Careers — published job openings, plus the write endpoint applicants submit to.
+    Route::get('/careers', [CareersController::class, 'index']);
+    Route::get('/careers/{slug}', [CareersController::class, 'show']);
+    Route::post('/careers/{slug}/apply', [CareersController::class, 'apply'])
+        ->middleware('throttle:6,1');
 });
 
 

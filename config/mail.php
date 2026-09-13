@@ -115,4 +115,17 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | HR Notification Address
+    |--------------------------------------------------------------------------
+    |
+    | Where the "new job application received" notification (FR-5.4) is sent.
+    | Left null in an environment without this set — the applicant confirmation
+    | still sends either way.
+    |
+    */
+
+    'hr_notification_address' => env('HR_NOTIFICATION_EMAIL'),
+
 ];
