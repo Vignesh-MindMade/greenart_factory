@@ -1,40 +1,38 @@
 <?php
 
-namespace App\Filament\Resources\PageSections\Tables;
+namespace App\Filament\Resources\CertificationBadges\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class PageSectionsTable
+class CertificationBadgesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->reorderable('sort_order')
+            ->defaultSort('sort_order')
             ->columns([
-                SpatieMediaLibraryImageColumn::make('page_section_image')
-                    ->collection('page_section_image')
-                    ->label('Image')
-                    ->circular(),
-                TextColumn::make('section_key')
-                    ->searchable()->badge(),
-                TextColumn::make('title')->limit(30)
+                TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('subtitle')->limit(30)->toggleable()
+                TextColumn::make('subtitle')
+                    ->limit(30)
                     ->searchable(),
-                TextColumn::make('cta_label')
+                TextColumn::make('sort_order')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'archived' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable()
                     ->searchable(),
-                TextColumn::make('cta_url')
-                    ->searchable(),
-                TextColumn::make('cta2_label')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('cta2_url')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

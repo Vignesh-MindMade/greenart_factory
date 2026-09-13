@@ -154,3 +154,11 @@ php artisan make:migration create_blog_categories_table
 php artisan make:migration create_blog_posts_table
 php artisan make:migration add_featured_to_portfolio_projects_table
 php artisan make:migration create_page_sections_table
+
+
+<!-- About-page -->
+php artisan make:migration add_cta2_to_page_sections_table
+php artisan make:migration create_about_stories_table
+php artisan make:migration create_team_members_table
+php artisan make:migration create_certifications_table
+php artisan make:migration create_certification_badges_table
