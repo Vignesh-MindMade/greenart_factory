@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\PageSections\Tables;
+namespace App\Filament\Resources\Certifications\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,32 +9,35 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class PageSectionsTable
+class CertificationsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->reorderable('sort_order')
+            ->defaultSort('sort_order')
             ->columns([
-                SpatieMediaLibraryImageColumn::make('page_section_image')
-                    ->collection('page_section_image')
-                    ->label('Image')
+                SpatieMediaLibraryImageColumn::make('certification_logos')
+                    ->collection('certification_logos')
+                    ->label('Logo')
                     ->circular(),
-                TextColumn::make('section_key')
-                    ->searchable()->badge(),
-                TextColumn::make('title')->limit(30)
-                    ->searchable(),
-                TextColumn::make('subtitle')->limit(30)->toggleable()
-                    ->searchable(),
-                TextColumn::make('cta_label')
-                    ->searchable(),
-                TextColumn::make('cta_url')
-                    ->searchable(),
-                TextColumn::make('cta2_label')
+                TextColumn::make('standard_code')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('cta2_url')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge(),
+                TextColumn::make('title')
+                    ->searchable(),
+                TextColumn::make('sort_order')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'archived' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

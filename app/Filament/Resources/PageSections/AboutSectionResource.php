@@ -2,45 +2,75 @@
 
 namespace App\Filament\Resources\PageSections;
 
-use App\Filament\Resources\PageSections\Pages\ListPageSections;
-use App\Filament\Resources\PageSections\Pages\CreatePageSection;
-use App\Filament\Resources\PageSections\Pages\EditPageSection;
-use App\Filament\Resources\PageSections\Schemas\PageSectionForm;
-use App\Filament\Resources\PageSections\Tables\PageSectionsTable;
+use App\Filament\Resources\PageSections\Pages\ListAboutPageSections;
+use App\Filament\Resources\PageSections\Pages\EditAboutPageSection;
 use App\Models\PageSection;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 use BackedEnum;
 
-class AboutSectionResource1 extends Resource
+// Section headings that are plain text only (no images/CTAs/stats) — the
+// media-heavy sections (Hero, Facility) each got their own dedicated
+// resource instead. Certifications/Core Values/Team also have their own
+// item-list resources; this only edits each block's intro heading text.
+class AboutSectionResource extends Resource
 {
+    private const SECTION_KEYS = [
+        'about_story',
+        'about_mission',
+        'about_vision',
+        'about_core_values',
+        'about_team',
+        'about_certifications',
+        'about_clients',
+    ];
+
     protected static ?string $model = PageSection::class;
-    protected static string|UnitEnum|null $navigationGroup = 'About';    // ← ?string not UnitEnum
-    protected static ?int $navigationSort = 1;
-   protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleGroup;
+    protected static string|UnitEnum|null $navigationGroup = 'About';
+    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleGroup;
 
-    protected static ?string $navigationLabel = 'About Sections';
-    protected static ?string $recordTitleAttribute = 'section_key';
+    protected static ?string $navigationLabel = 'Section Headings';
+    protected static ?string $recordTitleAttribute = 'title';
 
-    // Only shows about_* rows — admin never sees homepage sections here
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->where('section_key', 'like', 'about_%');
+            ->whereIn('section_key', self::SECTION_KEYS);
     }
 
-    // Reuses the same form and table as Homepage sections — no duplication
     public static function form(Schema $schema): Schema
     {
-        return PageSectionForm::configure($schema);
+        return $schema->components([
+            TextInput::make('section_key')
+                ->label('Section')
+                ->disabled()
+                ->dehydrated(false),
+            TextInput::make('title'),
+            TextInput::make('subtitle'),
+            Textarea::make('description')
+                ->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return PageSectionsTable::configure($table);
+        return $table
+            ->columns([
+                TextColumn::make('section_key')->label('Section')->badge(),
+                TextColumn::make('title')->limit(30)->searchable(),
+                TextColumn::make('subtitle')->limit(30)->toggleable()->searchable(),
+                TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->recordActions([
+                \Filament\Actions\EditAction::make(),
+            ]);
     }
 
     public static function canCreate(): bool { return false; }
@@ -51,9 +81,8 @@ class AboutSectionResource1 extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => ListPageSections::route('/'),
-            'create' => CreatePageSection::route('/create'),
-            'edit'   => EditPageSection::route('/{record}/edit'),
+            'index' => ListAboutPageSections::route('/'),
+            'edit'  => EditAboutPageSection::route('/{record}/edit'),
         ];
     }
 }

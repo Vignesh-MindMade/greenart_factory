@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\HomepageController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\AboutController;
 
 Route::get('/', [HomepageController::class, 'index']);
 
@@ -36,3 +37,6 @@ Route::prefix('homepage')->group(function () {
 // ── BLOG ──────────────────────────────────────────────────
 Route::get('/blog',                 [BlogController::class, 'index']);
 Route::get('/blog/{slug}',          [BlogController::class, 'show']);
+
+// ── ABOUT ─────────────────────────────────────────────────
+Route::get('/about', [AboutController::class, 'index']);
