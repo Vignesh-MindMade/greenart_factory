@@ -6,11 +6,12 @@ use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ServiceItem;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Service extends Model 
+class Service extends Model
 {
-    use LogsActivity;
+    use LogsActivity, SoftDeletes;
     //
   
     protected $fillable = ['name', 'slug', 'status'];

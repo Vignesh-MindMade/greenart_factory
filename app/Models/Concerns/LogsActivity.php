@@ -24,7 +24,7 @@ trait LogsActivity
             $changes = [];
 
             foreach ($model->getChanges() as $key => $new) {
-                if ($key === 'updated_at' || in_array($key, $model->activityRedactedKeys(), true)) {
+                if ($key === 'updated_at' || $key === 'deleted_at' || in_array($key, $model->activityRedactedKeys(), true)) {
                     continue;
                 }
 
@@ -41,8 +41,19 @@ trait LogsActivity
         });
 
         static::deleted(function ($model): void {
-            $model->recordActivity('deleted', $model->activitySnapshot($model->getAttributes()));
+            $isSoftDelete = method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting();
+
+            $model->recordActivity(
+                $isSoftDelete ? 'archived' : 'deleted',
+                $model->activitySnapshot($model->getAttributes())
+            );
         });
+
+        if (method_exists(static::class, 'restored')) {
+            static::restored(function ($model): void {
+                $model->recordActivity('restored', $model->activitySnapshot($model->getAttributes()));
+            });
+        }
     }
 
     protected function recordActivity(string $action, array $changes): void

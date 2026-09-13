@@ -44,6 +44,27 @@ trait HasModuleAccess
         return static::userLevel() === 'full';
     }
 
+    /** Restoring/force-deleting a trashed record is as destructive as deleting it. */
+    public static function canRestore($record): bool
+    {
+        return static::userLevel() === 'full';
+    }
+
+    public static function canRestoreAny(): bool
+    {
+        return static::userLevel() === 'full';
+    }
+
+    public static function canForceDelete($record): bool
+    {
+        return static::userLevel() === 'full';
+    }
+
+    public static function canForceDeleteAny(): bool
+    {
+        return static::userLevel() === 'full';
+    }
+
     protected static function userLevel(): string
     {
         $user = Auth::user();
